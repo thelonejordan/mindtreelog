@@ -1,0 +1,5 @@
+/.venv/
+/.data/
+/.ruff_cache/
+.env
+**/__pycache__/

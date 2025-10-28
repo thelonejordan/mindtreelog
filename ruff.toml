@@ -1,0 +1,54 @@
+# Enable pycodestyle (`E`), Pyflakes (`F`) and flake8-bugbear (`B`) codes.
+lint.select = ["A", "B", "C", "E", "F", "I", "N", "ARG", "DJ", "EM", "EXE", "FBT", "ICN", "ISC", "NPY", "PD", "PGH", "PIE", "PT", "PYI", "RET", "RSE", "RUF", "SIM", "TID", "UP", "YTT"]
+lint.ignore = ["B017", "C901", "E501", "E722", "E402", "F405", "N818", "N803", "DJ001", "RUF012", "UP035", "F401"]
+# Ignored Rules
+# B017,     https://docs.astral.sh/ruff/rules/assert-raises-exception/                  Requires Dev assistance
+# C901      https://docs.astral.sh/ruff/rules/complex-structure/                        Requires Dev assistance
+# E501      https://docs.astral.sh/ruff/rules/line-too-long/                            Skipped
+# E722      https://docs.astral.sh/ruff/rules/bare-except/                              Requires Dev assistance
+# E402      https://docs.astral.sh/ruff/rules/module-import-not-at-top-of-file/         Skipped
+# F405      https://docs.astral.sh/ruff/rules/undefined-local-with-import-star-usage/   Skipped
+# N818      https://docs.astral.sh/ruff/rules/error-suffix-on-exception-name/           Skipped
+# N803      https://docs.astral.sh/ruff/rules/invalid-argument-name/                    Requires Dev assistance
+# DJ001     https://docs.astral.sh/ruff/rules/django-nullable-model-string-field/       Requires migration
+# RUF012    https://docs.astral.sh/ruff/rules/mutable-class-default/                    Skipped
+# UP035     https://docs.astral.sh/ruff/rules/deprecated-import/                        Skipped
+
+# Allow autofix for all enabled rules (when `--fix`) is provided.
+lint.fixable = ["A", "B", "C", "D", "E", "F", "G", "I", "N", "Q", "S", "T", "W", "ANN", "ARG", "BLE", "COM", "DJ", "DTZ", "EM", "ERA", "EXE", "FBT", "ICN", "INP", "ISC", "NPY", "PD", "PGH", "PIE", "PL", "PT", "PTH", "PYI", "RET", "RSE", "RUF", "SIM", "SLF", "TCH", "TID", "TRY", "UP", "YTT"]
+lint.unfixable = []
+
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+    "legacycode"
+]
+lint.per-file-ignores = { "ai_assistant/migrations/*" = ["ARG001"],"ai_assistant/tests/*" = ["ARG001", "ARG002"] }
+
+# Same as Black.
+line-length = 120
+
+# Allow unused variables when underscore-prefixed.
+lint.dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+# Python 3.11.
+target-version = "py311"

@@ -1,0 +1,3 @@
+# MindTreeLog
+
+Install uv, just
