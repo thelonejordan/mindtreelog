@@ -77,10 +77,6 @@ The project uses pre-commit hooks to maintain code quality and consistency. Thes
 - **YAML validation** - Checks YAML syntax
 - **TOML validation** - Checks TOML syntax
 
-#### Safety Checks
-- **Large file detection** - Prevents accidental commits of large files
-- **Merge conflict detection** - Catches unresolved merge conflict markers
-
 All hooks run automatically on commit, but can also be run manually using the commands above.
 
 ### Linting & Formatting
