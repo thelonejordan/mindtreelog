@@ -1,6 +1,6 @@
 # Enable pycodestyle (`E`), Pyflakes (`F`) and flake8-bugbear (`B`) codes.
 lint.select = ["A", "B", "C", "E", "F", "I", "N", "ARG", "DJ", "EM", "EXE", "FBT", "ICN", "ISC", "NPY", "PD", "PGH", "PIE", "PT", "PYI", "RET", "RSE", "RUF", "SIM", "TID", "UP", "YTT"]
-lint.ignore = ["B017", "C901", "E501", "E722", "E402", "F405", "N818", "N803", "DJ001", "RUF012", "UP035", "F401"]
+lint.ignore = ["B017", "C901", "E501", "E722", "E402", "F405", "N818", "N803", "DJ001", "RUF012", "UP035", "F401", "ARG001"]
 # Ignored Rules
 # B017,     https://docs.astral.sh/ruff/rules/assert-raises-exception/                  Requires Dev assistance
 # C901      https://docs.astral.sh/ruff/rules/complex-structure/                        Requires Dev assistance

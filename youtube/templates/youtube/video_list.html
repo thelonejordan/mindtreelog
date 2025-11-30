@@ -281,6 +281,229 @@
             font-size: 16px;
         }
 
+        /* Add Video Button */
+        .add-video-btn {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            width: 56px;
+            height: 56px;
+            background: #3ea6ff;
+            border: none;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(62, 166, 255, 0.4);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .add-video-btn:hover {
+            background: #1c8fff;
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(62, 166, 255, 0.6);
+        }
+
+        .add-video-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #212121;
+            border-radius: 16px;
+            padding: 24px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            font-weight: 500;
+            color: #fff;
+        }
+
+        .close-btn {
+            background: transparent;
+            border: none;
+            color: #aaa;
+            font-size: 28px;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover {
+            background: #3a3a3a;
+            color: #fff;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #f1f1f1;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            background: #0f0f0f;
+            border: 1px solid #3a3a3a;
+            border-radius: 8px;
+            color: #f1f1f1;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #3ea6ff;
+            box-shadow: 0 0 0 3px rgba(62, 166, 255, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: #666;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #3ea6ff;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: #1c8fff;
+        }
+
+        .btn-secondary {
+            background: #3a3a3a;
+            color: #f1f1f1;
+        }
+
+        .btn-secondary:hover {
+            background: #4a4a4a;
+        }
+
+        /* Messages */
+        .messages {
+            position: fixed;
+            top: 80px;
+            right: 24px;
+            z-index: 2000;
+            max-width: 400px;
+        }
+
+        .message {
+            background: #212121;
+            border-left: 4px solid;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            animation: slideIn 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .message.success {
+            border-color: #0f9d58;
+        }
+
+        .message.error {
+            border-color: #f44336;
+        }
+
+        .message.warning {
+            border-color: #ff9800;
+        }
+
+        .message-icon {
+            font-size: 20px;
+        }
+
+        .message-text {
+            flex: 1;
+            font-size: 14px;
+            color: #f1f1f1;
+        }
+
         @media (max-width: 768px) {
             .video-list.card-view {
                 grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -297,6 +520,17 @@
             .header-left h1 {
                 font-size: 18px;
             }
+
+            .modal-content {
+                width: 95%;
+                padding: 20px;
+            }
+
+            .messages {
+                right: 16px;
+                left: 16px;
+                max-width: none;
+            }
         }
 
         @media (max-width: 640px) {
@@ -312,10 +546,32 @@
             .video-title {
                 font-size: 13px;
             }
+
+            .add-video-btn {
+                bottom: 20px;
+                right: 20px;
+                width: 48px;
+                height: 48px;
+                font-size: 20px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Messages -->
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="message {{ message.tags }}" onclick="this.style.display='none'">
+            <div class="message-icon">
+                {% if message.tags == 'success' %}✓{% elif message.tags == 'error' %}✕{% else %}⚠{% endif %}
+            </div>
+            <div class="message-text">{{ message }}</div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <div class="header">
         <div class="header-left">
             <h1>YouTube Videos</h1>
@@ -373,6 +629,42 @@
         </div>
     </div>
 
+    <!-- Add Video Button -->
+    <button class="add-video-btn" onclick="openModal()" title="Add video">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+    </button>
+
+    <!-- Add Video Modal -->
+    <div class="modal" id="addVideoModal" onclick="closeModalOnOutsideClick(event)">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add YouTube Video</h2>
+                <button class="close-btn" onclick="closeModal()" type="button">&times;</button>
+            </div>
+            <form method="POST" action="{% url 'list' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="video_url">YouTube URL</label>
+                    <input
+                        type="text"
+                        id="video_url"
+                        name="video_url"
+                        placeholder="https://www.youtube.com/watch?v=..."
+                        required
+                        autofocus
+                    >
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Video</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         // Load saved view preference or default to list view
         function loadViewPreference() {
@@ -401,8 +693,50 @@
             localStorage.setItem('videoView', view);
         }
 
-        // Load preference on page load
-        document.addEventListener('DOMContentLoaded', loadViewPreference);
+        // Modal functions
+        function openModal() {
+            document.getElementById('addVideoModal').classList.add('show');
+            document.getElementById('video_url').focus();
+        }
+
+        function closeModal() {
+            document.getElementById('addVideoModal').classList.remove('show');
+            document.getElementById('video_url').value = '';
+        }
+
+        function closeModalOnOutsideClick(event) {
+            if (event.target.id === 'addVideoModal') {
+                closeModal();
+            }
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Escape key to close modal
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+            // Ctrl/Cmd + K to open modal
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                openModal();
+            }
+        });
+
+        // Auto-dismiss messages after 5 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            loadViewPreference();
+
+            const messages = document.querySelectorAll('.message');
+            messages.forEach(message => {
+                setTimeout(() => {
+                    message.style.opacity = '0';
+                    setTimeout(() => {
+                        message.style.display = 'none';
+                    }, 300);
+                }, 5000);
+            });
+        });
     </script>
 </body>
 </html>
