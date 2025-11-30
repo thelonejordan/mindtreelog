@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import TwitterPost, YouTubeVideo
+from .models import ArxivPaper, GithubRepo, TwitterPost, YouTubeVideo
 
 
 # Register your models here.
@@ -20,3 +20,16 @@ class TwitterPostAdmin(admin.ModelAdmin):
         return obj.text[:50] + "..." if len(obj.text) > 50 else obj.text
 
     text_preview.short_description = "Text Preview"
+
+
+@admin.register(ArxivPaper)
+class ArxivPaperAdmin(admin.ModelAdmin):
+    list_display = ("arxiv_id", "title", "authors")
+    search_fields = ("arxiv_id", "title", "authors")
+
+
+@admin.register(GithubRepo)
+class GithubRepoAdmin(admin.ModelAdmin):
+    list_display = ("full_name", "stars", "language")
+    search_fields = ("full_name", "language")
+    list_filter = ("language",)

@@ -1,7 +1,5 @@
 from django.db import models
 
-# Create your models here.
-
 
 class YouTubeVideo(models.Model):
     title = models.CharField(max_length=200)
@@ -38,3 +36,36 @@ class TwitterPost(models.Model):
     def embed_url(self):
         """URL format required for Twitter embed widgets"""
         return f"https://twitter.com/{self.author_handle}/status/{self.post_id}?ref_src=twsrc%5Etfw"
+
+
+class ArxivPaper(models.Model):
+    title = models.CharField(max_length=300)
+    arxiv_id = models.CharField(max_length=50, unique=True)
+    summary = models.TextField(blank=True)
+    authors = models.CharField(max_length=300, blank=True)
+
+    class Meta:
+        db_table = "arxiv_papers"
+
+    def __str__(self):
+        return f"{self.arxiv_id}: {self.title[:50]}"
+
+    def paper_url(self):
+        return f"https://arxiv.org/abs/{self.arxiv_id}"
+
+
+class GithubRepo(models.Model):
+    full_name = models.CharField(max_length=200, unique=True)
+    description = models.CharField(max_length=500, blank=True)
+    stars = models.PositiveIntegerField(default=0)
+    language = models.CharField(max_length=50, blank=True)
+    homepage = models.URLField(blank=True)
+
+    class Meta:
+        db_table = "github_repos"
+
+    def __str__(self):
+        return self.full_name
+
+    def repo_url(self):
+        return f"https://github.com/{self.full_name}"

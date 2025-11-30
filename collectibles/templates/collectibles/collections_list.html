@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% if collection_type == 'youtube' %}YouTube Videos{% else %}X/Twitter Posts{% endif %}</title>
+    <title>{{ current_meta.label }}</title>
     <style>
         * {
             margin: 0;
@@ -254,6 +254,104 @@
             margin-bottom: 8px;
             -webkit-line-clamp: 2;
             line-clamp: 2;
+        }
+
+        /* arXiv styles */
+        .paper-item {
+            gap: 12px;
+        }
+
+        .paper-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .paper-id {
+            font-size: 13px;
+            color: #8b98a5;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .paper-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .paper-authors {
+            font-size: 13px;
+            color: #b0b0b0;
+            margin-bottom: 8px;
+        }
+
+        .paper-summary {
+            font-size: 14px;
+            color: #d0d0d0;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .paper-link {
+            font-size: 13px;
+            color: #3ea6ff;
+            text-decoration: none;
+        }
+
+        .paper-link:hover {
+            text-decoration: underline;
+        }
+
+        /* GitHub styles */
+        .repo-item {
+            gap: 10px;
+        }
+
+        .repo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .repo-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .repo-name:hover {
+            color: #3ea6ff;
+        }
+
+        .repo-stars {
+            font-size: 13px;
+            color: #ffdf5d;
+        }
+
+        .repo-description {
+            font-size: 14px;
+            color: #d0d0d0;
+            line-height: 1.5;
+        }
+
+        .repo-meta {
+            display: flex;
+            gap: 12px;
+            font-size: 12px;
+            color: #9aa0a6;
+        }
+
+        .repo-meta a {
+            color: #3ea6ff;
+            text-decoration: none;
+        }
+
+        .repo-meta a:hover {
+            text-decoration: underline;
         }
 
         .thumbnail-wrapper {
@@ -715,15 +813,18 @@
     <div class="collection-bar">
         <label for="collectionSelector">Collections</label>
         <select id="collectionSelector" class="collection-selector" onchange="switchCollection(this.value)">
-            <option value="youtube" {% if collection_type == 'youtube' %}selected{% endif %}>📹 YouTube Videos</option>
-            <option value="twitter" {% if collection_type == 'twitter' %}selected{% endif %}>𝕏 Twitter Posts</option>
+            {% for option in collection_options %}
+            <option value="{{ option.value }}" {% if collection_type == option.value %}selected{% endif %}>
+                {{ option.label }}
+            </option>
+            {% endfor %}
         </select>
     </div>
 
     <div class="header">
         <div class="header-left">
-            <h1>{% if collection_type == 'youtube' %}YouTube Videos{% else %}X/Twitter Posts{% endif %}</h1>
-            <div class="video-count">{{ items.count }} {% if collection_type == 'youtube' %}video{% else %}post{% endif %}{{ items.count|pluralize }}</div>
+            <h1>{{ current_meta.label }}</h1>
+            <div class="video-count">{{ items.count }} {{ current_meta.item_label }}{{ items.count|pluralize }}</div>
         </div>
         <div class="view-toggle">
             <button class="view-btn" id="cardViewBtn" onclick="setView('card')">
@@ -756,7 +857,7 @@
     <div class="container">
         <div class="video-list list-view" id="videoList">
             {% if collection_type == 'youtube' %}
-            {% for video in items %}
+                {% for video in items %}
                 <div class="video-item">
                     <a href="{{ video.video_url }}" target="_blank" style="display: flex; gap: 16px; flex: 1; text-decoration: none; color: inherit;">
                         <div class="thumbnail-wrapper">
@@ -791,16 +892,15 @@
                         </form>
                     </div>
                 </div>
-            {% empty %}
+                {% empty %}
                 <div class="empty-state">
-                    <div class="empty-state-icon">📹</div>
-                    <div class="empty-state-text">No videos yet</div>
+                    <div class="empty-state-icon">{{ current_meta.empty_icon }}</div>
+                    <div class="empty-state-text">{{ current_meta.empty_text }}</div>
                 </div>
-            {% endfor %}
+                {% endfor %}
 
-            {% else %}
-            <!-- Twitter Posts -->
-            {% for post in items %}
+            {% elif collection_type == 'twitter' %}
+                {% for post in items %}
                 <div class="video-item" data-post-id="{{ post.id }}">
                     <div style="flex: 1;">
                         <blockquote class="twitter-tweet" data-theme="dark">
@@ -830,18 +930,102 @@
                         </form>
                     </div>
                 </div>
-            {% empty %}
+                {% empty %}
                 <div class="empty-state">
-                    <div class="empty-state-icon">𝕏</div>
-                    <div class="empty-state-text">No posts yet</div>
+                    <div class="empty-state-icon">{{ current_meta.empty_icon }}</div>
+                    <div class="empty-state-text">{{ current_meta.empty_text }}</div>
                 </div>
-            {% endfor %}
+                {% endfor %}
+
+            {% elif collection_type == 'arxiv' %}
+                {% for paper in items %}
+                <div class="video-item paper-item">
+                    <div class="paper-header">
+                        <div>
+                            <div class="paper-id">{{ paper.arxiv_id }}</div>
+                            <div class="paper-title">{{ paper.title }}</div>
+                            <div class="paper-authors">{{ paper.authors }}</div>
+                        </div>
+                        <a class="paper-link" href="{{ paper.paper_url }}" target="_blank">View on arXiv</a>
+                    </div>
+                    <p class="paper-summary">{% if paper.summary %}{{ paper.summary }}{% else %}No summary available yet.{% endif %}</p>
+                    <div class="video-actions">
+                        <form method="POST" action="{% url 'arxiv_resync' paper.id %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="action-btn resync" onclick="return confirm('Resync arXiv metadata?');">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                                </svg>
+                                Resync
+                            </button>
+                        </form>
+                        <form method="POST" action="{% url 'arxiv_delete' paper.id %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="action-btn delete" onclick="return confirm('Delete this paper?');">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                </svg>
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="empty-state">
+                    <div class="empty-state-icon">{{ current_meta.empty_icon }}</div>
+                    <div class="empty-state-text">{{ current_meta.empty_text }}</div>
+                </div>
+                {% endfor %}
+
+            {% else %}
+                {% for repo in items %}
+                <div class="video-item repo-item">
+                    <div class="repo-header">
+                        <a class="repo-name" href="{{ repo.repo_url }}" target="_blank">{{ repo.full_name }}</a>
+                        <div class="repo-stars">⭐ {{ repo.stars }}</div>
+                    </div>
+                    <div class="repo-description">{% if repo.description %}{{ repo.description }}{% else %}No description provided.{% endif %}</div>
+                    <div class="repo-meta">
+                        {% if repo.language %}
+                        <span>{{ repo.language }}</span>
+                        {% endif %}
+                        {% if repo.homepage %}
+                        <a href="{{ repo.homepage }}" target="_blank">Live Site</a>
+                        {% endif %}
+                    </div>
+                    <div class="video-actions">
+                        <form method="POST" action="{% url 'github_resync' repo.id %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="action-btn resync" onclick="return confirm('Resync repository info?');">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                                </svg>
+                                Resync
+                            </button>
+                        </form>
+                        <form method="POST" action="{% url 'github_delete' repo.id %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="action-btn delete" onclick="return confirm('Delete this repository?');">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                </svg>
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="empty-state">
+                    <div class="empty-state-icon">{{ current_meta.empty_icon }}</div>
+                    <div class="empty-state-text">{{ current_meta.empty_text }}</div>
+                </div>
+                {% endfor %}
             {% endif %}
         </div>
     </div>
 
-    <!-- Add Video Button -->
-    <button class="add-video-btn" onclick="openModal()" title="Add video">
+    <!-- Add Item Button -->
+    <button class="add-video-btn" onclick="openModal()" title="{{ current_meta.add_title }}">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <line x1="12" y1="5" x2="12" y2="19"/>
             <line x1="5" y1="12" x2="19" y2="12"/>
@@ -852,25 +1036,25 @@
     <div class="modal" id="addVideoModal" onclick="closeModalOnOutsideClick(event)">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>{% if collection_type == 'youtube' %}Add YouTube Video{% else %}Add X/Twitter Post{% endif %}</h2>
+                <h2>{{ current_meta.add_title }}</h2>
                 <button class="close-btn" onclick="closeModal()" type="button">&times;</button>
             </div>
             <form method="POST">
                 {% csrf_token %}
                 <div class="form-group">
-                    <label for="item_url">{% if collection_type == 'youtube' %}YouTube URL{% else %}Twitter/X URL{% endif %}</label>
+                    <label for="item_url">{{ current_meta.input_label }}</label>
                     <input
                         type="text"
                         id="item_url"
                         name="item_url"
-                        placeholder="{% if collection_type == 'youtube' %}https://www.youtube.com/watch?v=...{% else %}https://x.com/username/status/...{% endif %}"
+                        placeholder="{{ current_meta.input_placeholder }}"
                         required
                         autofocus
                     >
                 </div>
                 <div class="form-actions">
                     <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Add Video</button>
+                    <button type="submit" class="btn btn-primary">Add {{ current_meta.item_label|title }}</button>
                 </div>
             </form>
         </div>
