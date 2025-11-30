@@ -18,3 +18,19 @@ class YouTubeVideo(models.Model):
 
     def video_url(self):
         return f"https://www.youtube.com/watch?v={self.video_id}"
+
+
+class TwitterPost(models.Model):
+    text = models.CharField(max_length=500)
+    post_id = models.CharField(max_length=30, unique=True)
+    author_name = models.CharField(max_length=100)
+    author_handle = models.CharField(max_length=50)
+
+    class Meta:
+        db_table = "twitter_posts"
+
+    def __str__(self):
+        return f"@{self.author_handle}: {self.text[:50]}"
+
+    def post_url(self):
+        return f"https://x.com/{self.author_handle}/status/{self.post_id}"

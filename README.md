@@ -11,20 +11,63 @@ Install the following tools:
 ## Setup
 
 1. Clone the repository
-2. Setup the project (creates venv, installs dependencies, and sets up pre-commit hooks):
+
+2. Create environment file:
+   ```shell
+   cp env.example .env
+   ```
+   Edit `.env` and add your configuration (see Configuration section below)
+
+3. Setup the project (creates venv, installs dependencies, and sets up pre-commit hooks):
    ```shell
    just setup
    ```
 
-3. Run migrations:
+4. Run migrations:
    ```shell
    just migrate
    ```
 
-4. Start the development server:
+5. Start the development server:
    ```shell
    just runserver
    ```
+
+## Configuration
+
+### Required Environment Variables
+
+Create a `.env` file in the project root with the following variables:
+
+```shell
+# Django Settings
+SECRET_KEY=your-secret-key-here
+DEBUG=true
+DEV_MODE=true
+
+# Twitter/X API (Optional - for full post details)
+TWITTER_BEARER_TOKEN=your-bearer-token-here
+```
+
+### Twitter API Setup (Optional)
+
+To fetch full tweet details (author name, text content), you need Twitter API credentials:
+
+1. **Apply for Twitter Developer Account:**
+   - Visit https://developer.twitter.com/
+   - Sign up and create a new Project & App
+   - Navigate to your App's "Keys and tokens" section
+
+2. **Get Bearer Token:**
+   - Generate a Bearer Token
+   - Copy it to your `.env` file as `TWITTER_BEARER_TOKEN`
+
+3. **API Tiers:**
+   - **Free**: 1,500 tweets/month (sufficient for personal use)
+   - **Basic**: $100/month, 10,000 tweets/month
+   - **Pro**: $5,000/month, 1M tweets/month
+
+**Note:** Without Twitter API credentials, posts will still be added but with placeholder text. You can edit them manually in the Django admin interface.
 
 ## Development
 
@@ -166,9 +209,13 @@ The project is configured to:
 
 ## Features
 
-- 📹 YouTube video collection management
+- 📹 YouTube video collection management (`/list`)
+- 𝕏 Twitter/X post collection management (`/xlist`)
 - 🎨 Modern dark-themed UI
 - 🔀 Toggle between card and list views
-- ➕ Add videos by pasting YouTube URLs
-- 🔄 Auto-fetch video titles and thumbnails
+- ➕ Add content by pasting URLs
+- 🔄 Auto-fetch metadata (titles, thumbnails, author info)
 - 📱 Responsive design
+- ⌨️ Keyboard shortcuts (Ctrl/Cmd + K to add, Escape to close)
+- 💾 Persistent view preferences
+- 🔍 Django admin interface for managing content

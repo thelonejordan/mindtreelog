@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouTube Videos</title>
+    <title>X/Twitter Posts</title>
     <style>
         * {
             margin: 0;
@@ -37,7 +37,7 @@
             color: #fff;
         }
 
-        .video-count {
+        .post-count {
             font-size: 13px;
             color: #aaa;
             margin-top: 4px;
@@ -71,7 +71,7 @@
         }
 
         .view-btn.active {
-            background: #3ea6ff;
+            background: #1d9bf0;
             color: #fff;
         }
 
@@ -106,21 +106,21 @@
             background: #888;
         }
 
-        .video-list {
+        .post-list {
             max-width: 1400px;
             margin: 0 auto;
         }
 
         /* List View */
-        .video-list.list-view {
+        .post-list.list-view {
             display: flex;
             flex-direction: column;
         }
 
-        .video-list.list-view .video-item {
+        .post-list.list-view .post-item {
             display: flex;
             flex-direction: column;
-            padding: 12px;
+            padding: 16px;
             margin-bottom: 8px;
             background: #212121;
             border-radius: 12px;
@@ -128,31 +128,19 @@
             border: 1px solid transparent;
         }
 
-        .video-list.list-view .video-item:hover {
+        .post-list.list-view .post-item:hover {
             background: #2a2a2a;
-            border-color: #3ea6ff;
-        }
-
-        .video-list.list-view .thumbnail {
-            width: 168px;
-            height: 94px;
-        }
-
-        .video-list.list-view .video-info {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            border-color: #1d9bf0;
         }
 
         /* Card View */
-        .video-list.card-view {
+        .post-list.card-view {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 16px;
         }
 
-        .video-list.card-view .video-item {
+        .post-list.card-view .post-item {
             display: flex;
             flex-direction: column;
             background: #212121;
@@ -160,114 +148,62 @@
             transition: all 0.2s ease;
             border: 1px solid transparent;
             overflow: hidden;
+            padding: 16px;
         }
 
-        .video-list.card-view .video-item:hover {
+        .post-list.card-view .post-item:hover {
             background: #2a2a2a;
-            border-color: #3ea6ff;
+            border-color: #1d9bf0;
             transform: translateY(-4px);
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
         }
 
-        .video-list.card-view .video-item > a {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .video-list.card-view .video-actions {
-            padding: 0 12px 12px 12px;
-        }
-
-        .video-list.card-view .thumbnail-wrapper {
-            width: 100%;
-            aspect-ratio: 16/9;
-        }
-
-        .video-list.card-view .thumbnail {
-            width: 100%;
-            height: 100%;
-        }
-
-        .video-list.card-view .video-info {
-            padding: 12px;
-        }
-
-        .video-list.card-view .video-title {
-            font-size: 15px;
-            margin-bottom: 8px;
-            -webkit-line-clamp: 2;
-            line-clamp: 2;
-        }
-
-        .thumbnail-wrapper {
-            flex-shrink: 0;
-            position: relative;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .thumbnail {
-            object-fit: cover;
-            display: block;
-        }
-
-        .play-overlay {
-            position: absolute;
-            inset: 0;
+        .post-author {
             display: flex;
             align-items: center;
-            justify-content: center;
-            background: rgba(0, 0, 0, 0.3);
-            opacity: 0;
-            transition: opacity 0.2s;
+            gap: 8px;
+            margin-bottom: 12px;
         }
 
-        .video-item:hover .play-overlay {
-            opacity: 1;
-        }
-
-        .play-icon {
-            width: 48px;
-            height: 48px;
-            background: rgba(255, 255, 255, 0.95);
+        .author-avatar {
+            width: 40px;
+            height: 40px;
+            background: #1d9bf0;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 18px;
         }
 
-        .play-icon::after {
-            content: '';
-            width: 0;
-            height: 0;
-            border-left: 12px solid #000;
-            border-top: 8px solid transparent;
-            border-bottom: 8px solid transparent;
-            margin-left: 3px;
+        .author-info {
+            flex: 1;
         }
 
-        .video-info {
-            min-width: 0;
-        }
-
-        .video-title {
-            font-size: 14px;
-            font-weight: 500;
-            line-height: 1.4;
+        .author-name {
+            font-size: 15px;
+            font-weight: 600;
             color: #f1f1f1;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            margin-bottom: 4px;
         }
 
-        .video-id {
-            font-size: 12px;
-            color: #aaa;
-            font-family: 'Courier New', monospace;
+        .author-handle {
+            font-size: 14px;
+            color: #8b98a5;
+        }
+
+        .post-text {
+            font-size: 15px;
+            line-height: 1.5;
+            color: #f1f1f1;
+            margin-bottom: 12px;
+            word-wrap: break-word;
+        }
+
+        .post-meta {
+            display: flex;
+            gap: 12px;
+            font-size: 13px;
+            color: #8b98a5;
         }
 
         .empty-state {
@@ -287,10 +223,12 @@
         }
 
         /* Action Buttons */
-        .video-actions {
+        .post-actions {
             display: flex;
             gap: 8px;
-            margin-top: 8px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #2a2a2a;
         }
 
         .action-btn {
@@ -320,11 +258,11 @@
         }
 
         .action-btn.resync {
-            background: #3ea6ff;
+            background: #1d9bf0;
         }
 
         .action-btn.resync:hover {
-            background: #1c8fff;
+            background: #1a8cd8;
         }
 
         .action-btn svg {
@@ -332,20 +270,20 @@
             height: 14px;
         }
 
-        /* Add Video Button */
-        .add-video-btn {
+        /* Add Post Button */
+        .add-post-btn {
             position: fixed;
             bottom: 32px;
             right: 32px;
             width: 56px;
             height: 56px;
-            background: #3ea6ff;
+            background: #1d9bf0;
             border: none;
             border-radius: 50%;
             color: #fff;
             font-size: 24px;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(62, 166, 255, 0.4);
+            box-shadow: 0 4px 12px rgba(29, 155, 240, 0.4);
             transition: all 0.3s;
             display: flex;
             align-items: center;
@@ -353,13 +291,13 @@
             z-index: 100;
         }
 
-        .add-video-btn:hover {
-            background: #1c8fff;
+        .add-post-btn:hover {
+            background: #1a8cd8;
             transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(62, 166, 255, 0.6);
+            box-shadow: 0 6px 20px rgba(29, 155, 240, 0.6);
         }
 
-        .add-video-btn:active {
+        .add-post-btn:active {
             transform: scale(0.95);
         }
 
@@ -458,8 +396,8 @@
 
         .form-group input:focus {
             outline: none;
-            border-color: #3ea6ff;
-            box-shadow: 0 0 0 3px rgba(62, 166, 255, 0.1);
+            border-color: #1d9bf0;
+            box-shadow: 0 0 0 3px rgba(29, 155, 240, 0.1);
         }
 
         .form-group input::placeholder {
@@ -483,12 +421,12 @@
         }
 
         .btn-primary {
-            background: #3ea6ff;
+            background: #1d9bf0;
             color: #fff;
         }
 
         .btn-primary:hover {
-            background: #1c8fff;
+            background: #1a8cd8;
         }
 
         .btn-secondary {
@@ -556,7 +494,7 @@
         }
 
         @media (max-width: 768px) {
-            .video-list.card-view {
+            .post-list.card-view {
                 grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             }
 
@@ -585,20 +523,11 @@
         }
 
         @media (max-width: 640px) {
-            .video-list.list-view .thumbnail {
-                width: 120px;
-                height: 68px;
-            }
-
-            .video-list.card-view {
+            .post-list.card-view {
                 grid-template-columns: 1fr;
             }
 
-            .video-title {
-                font-size: 13px;
-            }
-
-            .add-video-btn {
+            .add-post-btn {
                 bottom: 20px;
                 right: 20px;
                 width: 48px;
@@ -625,8 +554,8 @@
 
     <div class="header">
         <div class="header-left">
-            <h1>YouTube Videos</h1>
-            <div class="video-count">{{ videos.count }} video{{ videos.count|pluralize }}</div>
+            <h1>X/Twitter Posts</h1>
+            <div class="post-count">{{ posts.count }} post{{ posts.count|pluralize }}</div>
         </div>
         <div class="view-toggle">
             <button class="view-btn" id="cardViewBtn" onclick="setView('card')">
@@ -657,34 +586,37 @@
     </div>
 
     <div class="container">
-        <div class="video-list list-view" id="videoList">
-            {% for video in videos %}
-                <div class="video-item">
-                    <a href="{{ video.video_url }}" target="_blank" style="display: flex; gap: 16px; flex: 1; text-decoration: none; color: inherit;">
-                        <div class="thumbnail-wrapper">
-                            <img src="{{ video.thumbnail_url }}" alt="{{ video.title }}" class="thumbnail">
-                            <div class="play-overlay">
-                                <div class="play-icon"></div>
+        <div class="post-list list-view" id="postList">
+            {% for post in posts %}
+                <div class="post-item">
+                    <a href="{{ post.post_url }}" target="_blank" style="text-decoration: none; color: inherit; display: block;">
+                        <div class="post-author">
+                            <div class="author-avatar">
+                                {{ post.author_name|slice:":1"|upper }}
+                            </div>
+                            <div class="author-info">
+                                <div class="author-name">{{ post.author_name }}</div>
+                                <div class="author-handle">@{{ post.author_handle }}</div>
                             </div>
                         </div>
-                        <div class="video-info">
-                            <div class="video-title">{{ video.title }}</div>
-                            <div class="video-id">{{ video.video_id }}</div>
+                        <div class="post-text">{{ post.text }}</div>
+                        <div class="post-meta">
+                            <span>ID: {{ post.post_id }}</span>
                         </div>
                     </a>
-                    <div class="video-actions">
-                        <form method="POST" action="{% url 'video_resync' video.id %}" style="display: inline;">
+                    <div class="post-actions">
+                        <form method="POST" action="{% url 'twitter_resync' post.id %}" style="display: inline;">
                             {% csrf_token %}
-                            <button type="submit" class="action-btn resync" onclick="return confirm('Resync video information?');">
+                            <button type="submit" class="action-btn resync" onclick="return confirm('Resync post information?');">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
                                 </svg>
                                 Resync
                             </button>
                         </form>
-                        <form method="POST" action="{% url 'video_delete' video.id %}" style="display: inline;">
+                        <form method="POST" action="{% url 'twitter_delete' post.id %}" style="display: inline;">
                             {% csrf_token %}
-                            <button type="submit" class="action-btn delete" onclick="return confirm('Are you sure you want to delete this video?');">
+                            <button type="submit" class="action-btn delete" onclick="return confirm('Are you sure you want to delete this post?');">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                 </svg>
@@ -695,44 +627,44 @@
                 </div>
             {% empty %}
                 <div class="empty-state">
-                    <div class="empty-state-icon">📹</div>
-                    <div class="empty-state-text">No videos yet</div>
+                    <div class="empty-state-icon">𝕏</div>
+                    <div class="empty-state-text">No posts yet</div>
                 </div>
             {% endfor %}
         </div>
     </div>
 
-    <!-- Add Video Button -->
-    <button class="add-video-btn" onclick="openModal()" title="Add video">
+    <!-- Add Post Button -->
+    <button class="add-post-btn" onclick="openModal()" title="Add post">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <line x1="12" y1="5" x2="12" y2="19"/>
             <line x1="5" y1="12" x2="19" y2="12"/>
         </svg>
     </button>
 
-    <!-- Add Video Modal -->
-    <div class="modal" id="addVideoModal" onclick="closeModalOnOutsideClick(event)">
+    <!-- Add Post Modal -->
+    <div class="modal" id="addPostModal" onclick="closeModalOnOutsideClick(event)">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Add YouTube Video</h2>
+                <h2>Add X/Twitter Post</h2>
                 <button class="close-btn" onclick="closeModal()" type="button">&times;</button>
             </div>
-            <form method="POST" action="{% url 'list' %}">
+            <form method="POST" action="{% url 'xlist' %}">
                 {% csrf_token %}
                 <div class="form-group">
-                    <label for="video_url">YouTube URL</label>
+                    <label for="post_url">X/Twitter URL</label>
                     <input
                         type="text"
-                        id="video_url"
-                        name="video_url"
-                        placeholder="https://www.youtube.com/watch?v=..."
+                        id="post_url"
+                        name="post_url"
+                        placeholder="https://x.com/username/status/..."
                         required
                         autofocus
                     >
                 </div>
                 <div class="form-actions">
                     <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Add Video</button>
+                    <button type="submit" class="btn btn-primary">Add Post</button>
                 </div>
             </form>
         </div>
@@ -741,44 +673,44 @@
     <script>
         // Load saved view preference or default to list view
         function loadViewPreference() {
-            const savedView = localStorage.getItem('videoView') || 'list';
+            const savedView = localStorage.getItem('twitterPostView') || 'list';
             setView(savedView);
         }
 
         function setView(view) {
-            const videoList = document.getElementById('videoList');
+            const postList = document.getElementById('postList');
             const cardBtn = document.getElementById('cardViewBtn');
             const listBtn = document.getElementById('listViewBtn');
 
             if (view === 'card') {
-                videoList.classList.remove('list-view');
-                videoList.classList.add('card-view');
+                postList.classList.remove('list-view');
+                postList.classList.add('card-view');
                 cardBtn.classList.add('active');
                 listBtn.classList.remove('active');
             } else {
-                videoList.classList.remove('card-view');
-                videoList.classList.add('list-view');
+                postList.classList.remove('card-view');
+                postList.classList.add('list-view');
                 listBtn.classList.add('active');
                 cardBtn.classList.remove('active');
             }
 
             // Save preference
-            localStorage.setItem('videoView', view);
+            localStorage.setItem('twitterPostView', view);
         }
 
         // Modal functions
         function openModal() {
-            document.getElementById('addVideoModal').classList.add('show');
-            document.getElementById('video_url').focus();
+            document.getElementById('addPostModal').classList.add('show');
+            document.getElementById('post_url').focus();
         }
 
         function closeModal() {
-            document.getElementById('addVideoModal').classList.remove('show');
-            document.getElementById('video_url').value = '';
+            document.getElementById('addPostModal').classList.remove('show');
+            document.getElementById('post_url').value = '';
         }
 
         function closeModalOnOutsideClick(event) {
-            if (event.target.id === 'addVideoModal') {
+            if (event.target.id === 'addPostModal') {
                 closeModal();
             }
         }
