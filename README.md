@@ -11,27 +11,35 @@ Install the following tools:
 ## Setup
 
 1. Clone the repository
-2. Install dependencies:
+2. Setup the project (creates venv, installs dependencies, and sets up pre-commit hooks):
    ```shell
-   uv sync
+   just setup
    ```
 
-3. Install pre-commit hooks:
-   ```shell
-   just precommit-install
-   ```
-
-4. Run migrations:
+3. Run migrations:
    ```shell
    just migrate
    ```
 
-5. Start the development server:
+4. Start the development server:
    ```shell
    just runserver
    ```
 
 ## Development
+
+### Environment Management
+
+```shell
+# Create virtual environment
+just venv
+
+# Sync dependencies from lock file
+just sync
+
+# Complete setup (venv + sync + pre-commit install)
+just setup
+```
 
 ### Pre-commit Commands
 
@@ -78,11 +86,17 @@ All hooks run automatically on commit, but can also be run manually using the co
 ### Linting & Formatting
 
 ```shell
-# Lint and auto-fix Python files
+# Lint tracked Python files (auto-fix enabled)
 just lint
 
-# Format Python files
+# Lint all Python files (auto-fix enabled)
+just lint-all
+
+# Format tracked Python files
 just format
+
+# Format all Python files
+just format-all
 ```
 
 ### Database Commands
