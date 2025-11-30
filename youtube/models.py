@@ -34,3 +34,7 @@ class TwitterPost(models.Model):
 
     def post_url(self):
         return f"https://x.com/{self.author_handle}/status/{self.post_id}"
+
+    def embed_url(self):
+        """URL format required for Twitter embed widgets"""
+        return f"https://twitter.com/{self.author_handle}/status/{self.post_id}?ref_src=twsrc%5Etfw"

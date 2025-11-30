@@ -118,10 +118,8 @@
         }
 
         .post-list.list-view .post-item {
-            display: flex;
-            flex-direction: column;
             padding: 16px;
-            margin-bottom: 8px;
+            margin-bottom: 16px;
             background: #212121;
             border-radius: 12px;
             transition: all 0.2s ease;
@@ -141,8 +139,6 @@
         }
 
         .post-list.card-view .post-item {
-            display: flex;
-            flex-direction: column;
             background: #212121;
             border-radius: 12px;
             transition: all 0.2s ease;
@@ -158,52 +154,50 @@
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
         }
 
-        .post-author {
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        /* Twitter embed wrapper */
+        .tweet-embed {
             margin-bottom: 12px;
+            min-height: 100px;
+            position: relative;
         }
 
-        .author-avatar {
-            width: 40px;
-            height: 40px;
-            background: #1d9bf0;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-
-        .author-info {
-            flex: 1;
-        }
-
-        .author-name {
-            font-size: 15px;
-            font-weight: 600;
-            color: #f1f1f1;
-        }
-
-        .author-handle {
-            font-size: 14px;
-            color: #8b98a5;
-        }
-
-        .post-text {
+        /* Blockquote fallback styling (shown before widget renders) */
+        .tweet-embed blockquote {
+            margin: 0 !important;
+            padding: 16px;
+            background: #16181c;
+            border: 1px solid #38444d;
+            border-radius: 12px;
+            color: #e7e9ea;
             font-size: 15px;
             line-height: 1.5;
-            color: #f1f1f1;
+        }
+
+        .tweet-embed blockquote p {
             margin-bottom: 12px;
+            white-space: pre-wrap;
             word-wrap: break-word;
         }
 
-        .post-meta {
-            display: flex;
-            gap: 12px;
+        .tweet-embed blockquote a {
+            color: #1d9bf0;
+            text-decoration: none;
             font-size: 13px;
-            color: #8b98a5;
+        }
+
+        .tweet-embed blockquote a:hover {
+            text-decoration: underline;
+        }
+
+        /* Override Twitter widget default styles */
+        .post-item .twitter-tweet-rendered {
+            margin: 0 !important;
+        }
+
+        /* Ensure embedded tweet iframes are visible */
+        .tweet-embed iframe {
+            max-width: 100% !important;
+            display: block !important;
         }
 
         .empty-state {
@@ -588,22 +582,17 @@
     <div class="container">
         <div class="post-list list-view" id="postList">
             {% for post in posts %}
-                <div class="post-item">
-                    <a href="{{ post.post_url }}" target="_blank" style="text-decoration: none; color: inherit; display: block;">
-                        <div class="post-author">
-                            <div class="author-avatar">
-                                {{ post.author_name|slice:":1"|upper }}
-                            </div>
-                            <div class="author-info">
-                                <div class="author-name">{{ post.author_name }}</div>
-                                <div class="author-handle">@{{ post.author_handle }}</div>
-                            </div>
-                        </div>
-                        <div class="post-text">{{ post.text }}</div>
-                        <div class="post-meta">
-                            <span>ID: {{ post.post_id }}</span>
-                        </div>
-                    </a>
+                <div class="post-item" data-post-id="{{ post.id }}">
+                    <!-- Twitter Embed Widget -->
+                    <div class="tweet-embed">
+                        <blockquote class="twitter-tweet" data-theme="dark">
+                            <p lang="en" dir="ltr">{{ post.text }}</p>
+                            &mdash; {{ post.author_name }} (@{{ post.author_handle }})
+                            <a href="{{ post.embed_url }}">View on X</a>
+                        </blockquote>
+                    </div>
+
+                    <!-- Action Buttons -->
                     <div class="post-actions">
                         <form method="POST" action="{% url 'twitter_resync' post.id %}" style="display: inline;">
                             {% csrf_token %}
@@ -741,7 +730,35 @@
                     }, 300);
                 }, 5000);
             });
+
+            // Initialize Twitter widgets
+            loadTwitterWidgets();
         });
+
+        // Load Twitter widgets with retry logic
+        function loadTwitterWidgets() {
+            if (typeof twttr !== 'undefined' && twttr.widgets) {
+                console.log('Loading Twitter widgets...');
+                twttr.widgets.load(document.getElementById('postList')).then(function() {
+                    console.log('✓ Twitter widgets loaded successfully');
+                }).catch(function(error) {
+                    console.error('✗ Failed to load Twitter widgets:', error);
+                });
+            } else {
+                console.log('Waiting for Twitter widgets.js...');
+                setTimeout(loadTwitterWidgets, 100);
+            }
+        }
+
+        // Force reload widgets when view changes
+        const originalSetView = setView;
+        setView = function(view) {
+            originalSetView(view);
+            setTimeout(loadTwitterWidgets, 100);
+        };
     </script>
+
+    <!-- Twitter Widgets Script - Loads and renders embedded tweets -->
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 </body>
 </html>
