@@ -26,7 +26,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "false") == "true"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"] if DEBUG else []
 
 
 # Application definition
@@ -127,6 +127,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # more settings
 
 DEV_MODE = os.getenv("DEV_MODE", "false") == "true"
+
+INSTALLED_APPS += [
+    "youtube",
+]
 
 if DEV_MODE:
     INSTALLED_APPS += ["django_extensions"]

@@ -1,0 +1,31 @@
+<!-- templates/youtube/video_list.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>YouTube Thumbnails</title>
+    <style>
+        img {
+            width: 320px;
+            height: 180px;
+            margin: 10px;
+            border-radius: 8px;
+            transition: transform 0.2s ease;
+        }
+        img:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <h1>YouTube Videos</h1>
+    <div style="display: flex; flex-wrap: wrap;">
+        {% for video in videos %}
+            <a href="{{ video.video_url }}" target="_blank">
+                <img src="{{ video.thumbnail_url }}" alt="{{ video.title }}">
+            </a>
+        {% empty %}
+            <p>No videos yet!</p>
+        {% endfor %}
+    </div>
+</body>
+</html>
