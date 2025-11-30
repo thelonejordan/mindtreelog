@@ -1,6 +1,6 @@
 from django.urls import path
 
-from youtube import views
+from collectibles import views
 
 urlpatterns = [
     path("list", views.video_list, name="list"),

@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("youtube", "0001_initial"),
+        ("collectibles", "0001_initial"),
     ]
 
     operations = [

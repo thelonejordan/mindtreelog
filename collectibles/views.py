@@ -81,7 +81,7 @@ def video_list(request):
         return redirect("list")
 
     videos = YouTubeVideo.objects.all().order_by("-id")
-    return render(request, "youtube/video_list.html", {"videos": videos})
+    return render(request, "collectibles/video_list.html", {"videos": videos})
 
 
 def video_delete(request, video_id):
@@ -280,7 +280,7 @@ def twitter_list(request):
         return redirect("xlist")
 
     posts = TwitterPost.objects.all().order_by("-id")
-    return render(request, "youtube/twitter_list.html", {"posts": posts})
+    return render(request, "collectibles/twitter_list.html", {"posts": posts})
 
 
 def twitter_delete(request, post_id):

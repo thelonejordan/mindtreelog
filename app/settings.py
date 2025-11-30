@@ -129,7 +129,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 DEV_MODE = os.getenv("DEV_MODE", "false") == "true"
 
 INSTALLED_APPS += [
-    "youtube",
+    "collectibles",
 ]
 
 if DEV_MODE:
