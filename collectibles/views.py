@@ -11,7 +11,7 @@ from .models import TwitterPost, YouTubeVideo
 
 
 def home(request):
-    return HttpResponse("Hello, Django!")
+    return redirect("list")
 
 
 def extract_video_id(url):
@@ -41,12 +41,19 @@ def get_video_title(video_id):
     """Fetch video title from YouTube using oEmbed API."""
     try:
         url = f"https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v={video_id}&format=json"
+        print(f"Fetching video title from: {url}")
         response = requests.get(url, timeout=5)
+        print(f"YouTube API Response Status: {response.status_code}")
         if response.status_code == 200:
             data = response.json()
-            return data.get("title")
-    except Exception:
-        pass
+            title = data.get("title")
+            print(f"✓ Successfully fetched video: {title}")
+            return title
+        print(f"YouTube API error: Status {response.status_code}, Response: {response.text}")
+    except requests.exceptions.RequestException as e:
+        print(f"Network error fetching video title: {e}")
+    except Exception as e:
+        print(f"Unexpected error in get_video_title: {e}")
     return None
 
 
