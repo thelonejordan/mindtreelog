@@ -1,0 +1,220 @@
+/* Twitter-specific styles */
+
+/* Masonry layout for Twitter posts (variable heights) */
+.video-list.card-view.twitter-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    grid-auto-rows: 20px;
+    gap: 16px;
+    align-items: start;
+}
+
+.video-list.card-view.twitter-list .video-item {
+    grid-row-end: span var(--row-span, 30);
+    align-self: start;
+    height: auto;
+    overflow: visible;
+}
+
+@media (max-width: 900px) {
+    .video-list.card-view.twitter-list {
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .video-list.card-view.twitter-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Twitter list view optimizations */
+.video-list.list-view.twitter-list .video-item {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Twitter card view structure */
+.video-list.card-view.twitter-list .video-item {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+}
+
+/* Twitter embed container */
+.tweet-container {
+    flex: 1;
+    min-height: 0;
+}
+
+.video-list.card-view.twitter-list .tweet-container {
+    padding: 12px 12px 0 12px;
+}
+
+.video-list.list-view.twitter-list .tweet-container {
+    padding: 0;
+}
+
+/* Card View - Compact Twitter embeds with height limit */
+.video-list.card-view.twitter-list .twitter-tweet-rendered {
+    max-width: 100% !important;
+    max-height: 650px !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+}
+
+.video-list.card-view.twitter-list iframe.twitter-tweet-rendered {
+    max-width: 100% !important;
+    width: 100% !important;
+}
+
+/* List View - Wider Twitter embeds, no height limit */
+.video-list.list-view.twitter-list .twitter-tweet-rendered {
+    max-width: 550px !important;
+    margin: 0 !important;
+}
+
+.video-list.list-view.twitter-list iframe.twitter-tweet-rendered {
+    max-width: 550px !important;
+}
+
+/* Twitter widget centering in list view */
+.video-list.list-view.twitter-list .tweet-container {
+    display: flex;
+    justify-content: flex-start;
+}
+
+/* Smooth scrolling for long tweets in card view */
+.video-list.card-view.twitter-list .twitter-tweet-rendered {
+    scroll-behavior: smooth;
+}
+
+/* Twitter card view - compact action buttons */
+.video-list.card-view.twitter-list .video-actions {
+    display: flex;
+    gap: 8px;
+    padding: 8px 12px 12px 12px;
+    border-top: 1px solid #2a2a2a;
+    margin-top: 8px;
+}
+
+.video-list.card-view.twitter-list .action-btn {
+    flex: 1;
+    padding: 8px 10px;
+    font-size: 12px;
+    justify-content: center;
+}
+
+.video-list.card-view.twitter-list .action-btn svg {
+    width: 13px;
+    height: 13px;
+}
+
+.video-list.list-view.twitter-list .video-actions {
+    padding-top: 12px;
+    margin-top: 12px;
+}
+
+/* Fallback styling for Twitter blockquotes before widget renders */
+.twitter-list blockquote.twitter-tweet {
+    margin: 0 !important;
+    padding: 16px;
+    background: #16181c;
+    border: 1px solid #38444d;
+    border-radius: 12px;
+    color: #e7e9ea;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.twitter-list blockquote.twitter-tweet p {
+    margin-bottom: 12px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.twitter-list blockquote.twitter-tweet a {
+    color: #1d9bf0;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.twitter-list blockquote.twitter-tweet a:hover {
+    text-decoration: underline;
+}
+
+/* Twitter card styling */
+.tweet-card {
+    position: relative;
+}
+
+/* Card view - constrain tweet height */
+.video-list.card-view.twitter-list blockquote.twitter-tweet:not(.twitter-tweet-rendered) {
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Constrain embedded tweet wrapper */
+.video-list.card-view.twitter-list .tweet-container {
+    max-height: 650px;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Add fade overlay for very long tweets in card view */
+.video-list.card-view.twitter-list .tweet-container::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: linear-gradient(to bottom, transparent, #212121);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.video-list.card-view.twitter-list .tweet-card:hover .tweet-container::after {
+    opacity: 0.8;
+}
+
+/* Remove fade in list view */
+.video-list.list-view.twitter-list .tweet-container::after {
+    display: none;
+}
+
+/* Twitter blockquote styling (fallback before widget loads) */
+.twitter-tweet {
+    margin: 0 !important;
+    padding: 16px;
+    background: #16181c;
+    border: 1px solid #38444d;
+    border-radius: 12px;
+    color: #e7e9ea;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.twitter-tweet p {
+    margin-bottom: 12px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.twitter-tweet a {
+    color: #1d9bf0;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.twitter-tweet a:hover {
+    text-decoration: underline;
+}
+
+/* Twitter widget rendered */
+.twitter-tweet-rendered {
+    margin: 0 !important;
+}

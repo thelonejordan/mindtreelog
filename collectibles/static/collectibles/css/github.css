@@ -1,0 +1,94 @@
+/* GitHub-specific styles */
+
+.repo-item {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100%;
+}
+
+/* GitHub list view */
+.video-list.list-view .repo-item {
+    padding: 16px;
+}
+
+/* GitHub card view */
+.video-list.card-view .repo-item {
+    padding: 16px;
+}
+
+/* Push buttons to bottom in card view */
+.video-list.card-view .repo-item > *:not(.video-actions) {
+    flex-shrink: 0;
+}
+
+.video-list.card-view .repo-item .repo-description {
+    flex-grow: 1;
+}
+
+.repo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.repo-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    text-decoration: none;
+    line-height: 1.3;
+    word-break: break-word;
+}
+
+.video-list.card-view .repo-name {
+    font-size: 15px;
+}
+
+.repo-name:hover {
+    color: #3ea6ff;
+}
+
+.repo-stars {
+    font-size: 13px;
+    color: #ffdf5d;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.repo-description {
+    font-size: 14px;
+    color: #d0d0d0;
+    line-height: 1.5;
+}
+
+.video-list.card-view .repo-description {
+    font-size: 13px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.repo-meta {
+    display: flex;
+    gap: 12px;
+    font-size: 12px;
+    color: #9aa0a6;
+    flex-wrap: wrap;
+}
+
+.repo-meta a {
+    color: #3ea6ff;
+    text-decoration: none;
+}
+
+.repo-meta a:hover {
+    text-decoration: underline;
+}
+
+.video-list.card-view .repo-item .video-actions {
+    padding: 0;
+    margin-top: 4px;
+}
