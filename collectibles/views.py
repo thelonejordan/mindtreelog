@@ -11,7 +11,111 @@ from .models import TwitterPost, YouTubeVideo
 
 
 def home(request):
-    return redirect("list")
+    return redirect("collections_list", collection_type="youtube")
+
+
+def collections_list(request, collection_type="youtube"):
+    """Unified view for both YouTube videos and Twitter posts."""
+    # Validate collection type
+    if collection_type not in ["youtube", "twitter"]:
+        return redirect("collections_list", collection_type="youtube")
+
+    if request.method == "POST":
+        if collection_type == "youtube":
+            return handle_youtube_add(request)
+        return handle_twitter_add(request)
+
+    # Get items based on type
+    if collection_type == "youtube":
+        items = YouTubeVideo.objects.all().order_by("-id")
+    else:
+        items = TwitterPost.objects.all().order_by("-id")
+
+    context = {
+        "collection_type": collection_type,
+        "items": items,
+    }
+    return render(request, "collectibles/collections_list.html", context)
+
+
+def handle_youtube_add(request):
+    """Handle adding a YouTube video."""
+    video_url = request.POST.get("item_url", "").strip()
+
+    if not video_url:
+        messages.error(request, "Please enter a YouTube URL")
+        return redirect("collections_list", collection_type="youtube")
+
+    # Extract video ID
+    video_id = extract_video_id(video_url)
+    if not video_id:
+        messages.error(request, "Invalid YouTube URL")
+        return redirect("collections_list", collection_type="youtube")
+
+    # Check if video already exists
+    if YouTubeVideo.objects.filter(video_id=video_id).exists():
+        messages.warning(request, "This video is already in your list")
+        return redirect("collections_list", collection_type="youtube")
+
+    # Fetch video title
+    title = get_video_title(video_id)
+    if not title:
+        messages.error(request, "Could not fetch video information")
+        return redirect("collections_list", collection_type="youtube")
+
+    # Save video
+    YouTubeVideo.objects.create(video_id=video_id, title=title)
+    messages.success(request, f"Added: {title}")
+    return redirect("collections_list", collection_type="youtube")
+
+
+def handle_twitter_add(request):
+    """Handle adding a Twitter post."""
+    post_url = request.POST.get("item_url", "").strip()
+
+    if not post_url:
+        messages.error(request, "Please enter a Twitter/X URL")
+        return redirect("collections_list", collection_type="twitter")
+
+    # Extract tweet ID and handle
+    result = extract_tweet_id_and_handle(post_url)
+    if not result:
+        messages.error(request, "Invalid Twitter/X URL")
+        return redirect("collections_list", collection_type="twitter")
+
+    post_id, author_handle = result
+
+    # Check if post already exists
+    if TwitterPost.objects.filter(post_id=post_id).exists():
+        messages.warning(request, "This post is already in your list")
+        return redirect("collections_list", collection_type="twitter")
+
+    # Fetch tweet info
+    tweet_info = get_tweet_info(post_id, author_handle)
+
+    # Create post (with or without fetched info)
+    if tweet_info:
+        TwitterPost.objects.create(
+            post_id=post_id,
+            author_handle=author_handle,
+            text=tweet_info["text"],
+            author_name=tweet_info["author_name"],
+        )
+        messages.success(request, f"Added post from @{author_handle}")
+    else:
+        # Save with placeholder text
+        TwitterPost.objects.create(
+            post_id=post_id,
+            author_handle=author_handle,
+            text=f"Post {post_id[:10]}...",
+            author_name=author_handle,
+        )
+        messages.warning(
+            request,
+            f"Added post from @{author_handle} (info fetch failed - post saved with placeholder)",
+        )
+
+    return redirect("collections_list", collection_type="twitter")
 
 
 def extract_video_id(url):
@@ -58,37 +162,8 @@ def get_video_title(video_id):
 
 
 def video_list(request):
-    if request.method == "POST":
-        video_url = request.POST.get("video_url", "").strip()
-
-        if not video_url:
-            messages.error(request, "Please enter a YouTube URL")
-            return redirect("list")
-
-        # Extract video ID
-        video_id = extract_video_id(video_url)
-        if not video_id:
-            messages.error(request, "Invalid YouTube URL")
-            return redirect("list")
-
-        # Check if video already exists
-        if YouTubeVideo.objects.filter(video_id=video_id).exists():
-            messages.warning(request, "This video is already in your list")
-            return redirect("list")
-
-        # Fetch video title
-        title = get_video_title(video_id)
-        if not title:
-            messages.error(request, "Could not fetch video information")
-            return redirect("list")
-
-        # Save video
-        YouTubeVideo.objects.create(video_id=video_id, title=title)
-        messages.success(request, f"Added: {title}")
-        return redirect("list")
-
-    videos = YouTubeVideo.objects.all().order_by("-id")
-    return render(request, "collectibles/video_list.html", {"videos": videos})
+    """Legacy redirect to unified collections view."""
+    return redirect("collections_list", collection_type="youtube")
 
 
 def video_delete(request, video_id):
@@ -100,7 +175,7 @@ def video_delete(request, video_id):
         messages.success(request, f"Deleted: {title}")
     except YouTubeVideo.DoesNotExist:
         messages.error(request, "Video not found")
-    return redirect("list")
+    return redirect("collections_list", collection_type="youtube")
 
 
 def video_resync(request, video_id):
@@ -118,7 +193,7 @@ def video_resync(request, video_id):
             messages.error(request, "Could not fetch updated video information")
     except YouTubeVideo.DoesNotExist:
         messages.error(request, "Video not found")
-    return redirect("list")
+    return redirect("collections_list", collection_type="youtube")
 
 
 def extract_tweet_id_and_handle(url):
@@ -241,53 +316,8 @@ def get_tweet_info(post_id, author_handle):
 
 
 def twitter_list(request):
-    if request.method == "POST":
-        post_url = request.POST.get("post_url", "").strip()
-
-        if not post_url:
-            messages.error(request, "Please enter an X/Twitter URL")
-            return redirect("xlist")
-
-        # Extract post ID and handle
-        author_handle, post_id = extract_tweet_id_and_handle(post_url)
-        if not post_id or not author_handle:
-            messages.error(request, "Invalid X/Twitter URL")
-            return redirect("xlist")
-
-        # Check if post already exists
-        if TwitterPost.objects.filter(post_id=post_id).exists():
-            messages.warning(request, "This post is already in your list")
-            return redirect("xlist")
-
-        # Fetch post info (optional - fallback to defaults if API fails)
-        post_info = get_tweet_info(post_id, author_handle)
-
-        if post_info:
-            author_name = post_info["author_name"]
-            text = post_info["text"]
-        else:
-            # Use defaults if we can't fetch from API
-            author_name = author_handle
-            text = f"Post from @{author_handle}"
-            messages.warning(
-                request,
-                f"Added post from @{author_handle} (Could not fetch full details from X/Twitter API)",
-            )
-
-        # Save post
-        TwitterPost.objects.create(
-            post_id=post_id,
-            author_handle=author_handle,
-            author_name=author_name,
-            text=text,
-        )
-
-        if post_info:
-            messages.success(request, f"Added post from @{author_handle}")
-        return redirect("xlist")
-
-    posts = TwitterPost.objects.all().order_by("-id")
-    return render(request, "collectibles/twitter_list.html", {"posts": posts})
+    """Legacy redirect to unified collections view."""
+    return redirect("collections_list", collection_type="twitter")
 
 
 def twitter_delete(request, post_id):
@@ -299,7 +329,7 @@ def twitter_delete(request, post_id):
         messages.success(request, f"Deleted post from @{author}")
     except TwitterPost.DoesNotExist:
         messages.error(request, "Post not found")
-    return redirect("xlist")
+    return redirect("collections_list", collection_type="twitter")
 
 
 def twitter_resync(request, post_id):
@@ -322,4 +352,4 @@ def twitter_resync(request, post_id):
             )
     except TwitterPost.DoesNotExist:
         messages.error(request, "Post not found")
-    return redirect("xlist")
+    return redirect("collections_list", collection_type="twitter")
