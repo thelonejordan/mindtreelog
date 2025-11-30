@@ -1,0 +1,35 @@
+repos:
+  - repo: local
+    hooks:
+      - id: check-python-version
+        name: Check Python version consistency
+        entry: .pre-commit-hooks/check-python-version.py
+        language: script
+        pass_filenames: false
+        files: ^(\.python-version|pyproject\.toml|ruff\.toml)$
+      - id: check-uv-lock
+        name: Check uv.lock is in sync with pyproject.toml
+        entry: .pre-commit-hooks/check-uv-lock.sh
+        language: script
+        pass_filenames: false
+        files: ^(pyproject\.toml|uv\.lock)$
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.4
+    hooks:
+      # Run the linter
+      - id: ruff
+        args: [--fix]
+      # Run the formatter
+      - id: ruff-format
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+      - id: check-merge-conflict
+      - id: check-toml
+      - id: mixed-line-ending

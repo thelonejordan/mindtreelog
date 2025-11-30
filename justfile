@@ -14,6 +14,7 @@ default:
 
 python := ".venv/bin/python"
 pip := ".venv/bin/pip"
+precommit := ".venv/bin/pre-commit"
 
 django_help:
     {{python}} manage.py help
@@ -49,3 +50,15 @@ lint:
 
 format:
     git ls-files '*.py' | xargs {{python}} -m ruff format
+
+precommit-install:
+    {{precommit}} install
+
+precommit:
+    {{precommit}} run
+
+precommit-all:
+    {{precommit}} run --all-files
+
+precommit-update:
+    {{precommit}} autoupdate
