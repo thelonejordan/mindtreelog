@@ -127,6 +127,43 @@ just show_urls
 just
 ```
 
+## VSCode Setup
+
+This project includes VSCode configuration for debugging and development:
+
+### Debugging
+
+The project includes pre-configured debug configurations:
+
+1. **Django: runserver** - Debug the Django development server
+2. **Django: runserver (no reload)** - Debug without auto-reload (useful for debugging startup issues)
+3. **Django: shell** - Debug in Django shell
+4. **Django: migrate** - Debug migrations
+5. **Python: Current File** - Debug the currently open Python file
+
+To start debugging:
+1. Open the Run and Debug panel (Ctrl/Cmd + Shift + D)
+2. Select a configuration from the dropdown
+3. Press F5 or click the green play button
+
+### Recommended Extensions
+
+VSCode will prompt you to install recommended extensions:
+- **Python** - Python language support
+- **Debugpy** - Python debugger
+- **Pylance** - Fast Python language server
+- **Ruff** - Fast Python linter and formatter
+- **Django** - Django template support
+
+### Settings
+
+The project is configured to:
+- Use the virtual environment at `.venv/bin/python`
+- Format Python files with Ruff on save
+- Auto-fix linting issues on save
+- Organize imports on save
+- Enable Django template syntax highlighting
+
 ## Features
 
 - 📹 YouTube video collection management

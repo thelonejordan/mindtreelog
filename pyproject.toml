@@ -11,6 +11,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "debugpy>=1.8.11",
     "django-extensions>=4.1",
     "pre-commit>=4.0.1",
     "ruff>=0.14.2",
