@@ -1,19 +1,11 @@
 /* Twitter-specific styles */
 
-/* Masonry layout for Twitter posts (variable heights) */
+/* Grid layout for Twitter posts (fixed heights) */
 .video-list.card-view.twitter-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-    grid-auto-rows: 20px;
     gap: 16px;
-    align-items: start;
-}
-
-.video-list.card-view.twitter-list .video-item {
-    grid-row-end: span var(--row-span, 30);
-    align-self: start;
-    height: auto;
-    overflow: visible;
+    align-items: stretch;
 }
 
 @media (max-width: 900px) {
@@ -35,11 +27,12 @@
     gap: 12px;
 }
 
-/* Twitter card view structure */
+/* Twitter card view structure - fixed height */
 .video-list.card-view.twitter-list .video-item {
     display: flex;
     flex-direction: column;
     padding: 0;
+    height: 630px; /* 550px tweet + ~80px for buttons */
 }
 
 /* Twitter embed container */
@@ -56,10 +49,11 @@
     padding: 0;
 }
 
-/* Card View - Compact Twitter embeds with height limit */
+/* Card View - Fixed height Twitter embeds */
 .video-list.card-view.twitter-list .twitter-tweet-rendered {
     max-width: 100% !important;
-    max-height: 650px !important;
+    height: 550px !important;
+    max-height: 550px !important;
     overflow: hidden !important;
     margin: 0 !important;
 }
@@ -67,6 +61,8 @@
 .video-list.card-view.twitter-list iframe.twitter-tweet-rendered {
     max-width: 100% !important;
     width: 100% !important;
+    height: 550px !important;
+    max-height: 550px !important;
 }
 
 /* List View - Wider Twitter embeds, no height limit */
@@ -158,7 +154,8 @@
 
 /* Constrain embedded tweet wrapper */
 .video-list.card-view.twitter-list .tweet-container {
-    max-height: 650px;
+    height: 550px;
+    max-height: 550px;
     overflow: hidden;
     position: relative;
 }
@@ -170,15 +167,11 @@
     bottom: 0;
     left: 0;
     right: 0;
-    height: 60px;
+    height: 80px;
     background: linear-gradient(to bottom, transparent, #212121);
     pointer-events: none;
-    opacity: 0;
+    opacity: 1;
     transition: opacity 0.3s;
-}
-
-.video-list.card-view.twitter-list .tweet-card:hover .tweet-container::after {
-    opacity: 0.8;
 }
 
 /* Remove fade in list view */

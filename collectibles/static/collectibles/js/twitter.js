@@ -1,23 +1,15 @@
 // Twitter-specific JavaScript for masonry layout and widget loading
 
-// Calculate and set grid row spans for Twitter cards (masonry layout)
+// Calculate and set grid row spans for Twitter cards (now using fixed height)
 function updateTwitterCardSpans() {
     const videoList = document.getElementById('videoList');
     if (!videoList || !videoList.classList.contains('card-view') || !videoList.classList.contains('twitter-list')) {
         return;
     }
 
-    const items = videoList.querySelectorAll('.video-item');
-    const rowHeight = 20; // Must match grid-auto-rows in CSS
-    const maxCardHeight = 650; // Max height for embedded tweets in card view
-
-    items.forEach(item => {
-        const height = Math.min(item.offsetHeight, maxCardHeight + 100); // +100 for buttons/padding
-        const rowSpan = Math.ceil((height + 16) / rowHeight); // +16 for gap
-        item.style.setProperty('--row-span', rowSpan);
-    });
-
-    console.log(`Updated ${items.length} Twitter card spans`);
+    // With fixed height containers, we don't need to calculate spans anymore
+    // This function is kept for compatibility but does minimal work
+    console.log('Twitter cards loaded with fixed heights');
 }
 
 // Load Twitter widgets for embedded tweets
