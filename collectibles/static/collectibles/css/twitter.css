@@ -1,23 +1,11 @@
 /* Twitter-specific styles */
 
-/* Grid layout for Twitter posts (fixed heights) */
+/* Grid layout for Twitter posts (flexible, ~4 per row on desktop) */
 .video-list.card-view.twitter-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 16px;
     align-items: stretch;
-}
-
-@media (max-width: 900px) {
-    .video-list.card-view.twitter-list {
-        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    }
-}
-
-@media (max-width: 768px) {
-    .video-list.card-view.twitter-list {
-        grid-template-columns: 1fr;
-    }
 }
 
 /* Twitter list view optimizations */
@@ -32,7 +20,7 @@
     display: flex;
     flex-direction: column;
     padding: 0;
-    height: 630px; /* 550px tweet + ~80px for buttons */
+    height: 380px; /* 320px tweet + ~60px for buttons */
 }
 
 /* Twitter embed container */
@@ -45,15 +33,12 @@
     padding: 12px 12px 0 12px;
 }
 
-.video-list.list-view.twitter-list .tweet-container {
-    padding: 0;
-}
 
 /* Card View - Fixed height Twitter embeds */
 .video-list.card-view.twitter-list .twitter-tweet-rendered {
     max-width: 100% !important;
-    height: 550px !important;
-    max-height: 550px !important;
+    height: 320px !important;
+    max-height: 320px !important;
     overflow: hidden !important;
     margin: 0 !important;
 }
@@ -61,24 +46,46 @@
 .video-list.card-view.twitter-list iframe.twitter-tweet-rendered {
     max-width: 100% !important;
     width: 100% !important;
-    height: 550px !important;
-    max-height: 550px !important;
+    height: 320px !important;
+    max-height: 320px !important;
 }
 
-/* List View - Wider Twitter embeds, no height limit */
+/* List View - Wider Twitter embeds with height limit for consistency */
 .video-list.list-view.twitter-list .twitter-tweet-rendered {
     max-width: 550px !important;
+    height: 320px !important;
+    max-height: 320px !important;
+    overflow: hidden !important;
     margin: 0 !important;
 }
 
 .video-list.list-view.twitter-list iframe.twitter-tweet-rendered {
     max-width: 550px !important;
+    height: 320px !important;
+    max-height: 320px !important;
 }
 
-/* Twitter widget centering in list view */
+/* Twitter widget container in list view */
 .video-list.list-view.twitter-list .tweet-container {
     display: flex;
     justify-content: flex-start;
+    height: 320px;
+    max-height: 320px;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Add fade overlay for list view tweets */
+.video-list.list-view.twitter-list .tweet-container::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background: linear-gradient(to bottom, transparent, #212121);
+    pointer-events: none;
+    opacity: 1;
 }
 
 /* Smooth scrolling for long tweets in card view */
@@ -147,15 +154,22 @@
 
 /* Card view - constrain tweet height */
 .video-list.card-view.twitter-list blockquote.twitter-tweet:not(.twitter-tweet-rendered) {
-    max-height: 500px;
+    max-height: 320px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* List view - constrain tweet height for consistency */
+.video-list.list-view.twitter-list blockquote.twitter-tweet:not(.twitter-tweet-rendered) {
+    max-height: 320px;
     overflow-y: auto;
     overflow-x: hidden;
 }
 
 /* Constrain embedded tweet wrapper */
 .video-list.card-view.twitter-list .tweet-container {
-    height: 550px;
-    max-height: 550px;
+    height: 320px;
+    max-height: 320px;
     overflow: hidden;
     position: relative;
 }
@@ -167,17 +181,13 @@
     bottom: 0;
     left: 0;
     right: 0;
-    height: 80px;
+    height: 50px;
     background: linear-gradient(to bottom, transparent, #212121);
     pointer-events: none;
     opacity: 1;
     transition: opacity 0.3s;
 }
 
-/* Remove fade in list view */
-.video-list.list-view.twitter-list .tweet-container::after {
-    display: none;
-}
 
 /* Twitter blockquote styling (fallback before widget loads) */
 .twitter-tweet {
