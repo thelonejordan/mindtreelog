@@ -208,6 +208,192 @@
             gap: 16px;
         }
 
+        /* Masonry layout for Twitter posts (variable heights) */
+        .video-list.card-view.twitter-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            grid-auto-rows: 20px;
+            gap: 16px;
+            align-items: start;
+        }
+
+        .video-list.card-view.twitter-list .video-item {
+            grid-row-end: span var(--row-span, 30);
+            align-self: start;
+            height: auto;
+            overflow: visible;
+        }
+
+        @media (max-width: 900px) {
+            .video-list.card-view.twitter-list {
+                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .video-list.card-view.twitter-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Twitter list view optimizations */
+        .video-list.list-view.twitter-list .video-item {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* Twitter card view structure */
+        .video-list.card-view.twitter-list .video-item {
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+        }
+
+        /* Twitter embed container */
+        .tweet-container {
+            flex: 1;
+            min-height: 0;
+        }
+
+        .video-list.card-view.twitter-list .tweet-container {
+            padding: 12px 12px 0 12px;
+        }
+
+        .video-list.list-view.twitter-list .tweet-container {
+            padding: 0;
+        }
+
+        /* Card View - Compact Twitter embeds with height limit */
+        .video-list.card-view.twitter-list .twitter-tweet-rendered {
+            max-width: 100% !important;
+            max-height: 650px !important;
+            overflow: hidden !important;
+            margin: 0 !important;
+        }
+
+        .video-list.card-view.twitter-list iframe.twitter-tweet-rendered {
+            max-width: 100% !important;
+            width: 100% !important;
+        }
+
+        /* List View - Wider Twitter embeds, no height limit */
+        .video-list.list-view.twitter-list .twitter-tweet-rendered {
+            max-width: 550px !important;
+            margin: 0 !important;
+        }
+
+        .video-list.list-view.twitter-list iframe.twitter-tweet-rendered {
+            max-width: 550px !important;
+        }
+
+        /* Twitter widget centering in list view */
+        .video-list.list-view.twitter-list .tweet-container {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        /* Smooth scrolling for long tweets in card view */
+        .video-list.card-view.twitter-list .twitter-tweet-rendered {
+            scroll-behavior: smooth;
+        }
+
+        /* Twitter card view - compact action buttons */
+        .video-list.card-view.twitter-list .video-actions {
+            display: flex;
+            gap: 8px;
+            padding: 8px 12px 12px 12px;
+            border-top: 1px solid #2a2a2a;
+            margin-top: 8px;
+        }
+
+        .video-list.card-view.twitter-list .action-btn {
+            flex: 1;
+            padding: 8px 10px;
+            font-size: 12px;
+            justify-content: center;
+        }
+
+        .video-list.card-view.twitter-list .action-btn svg {
+            width: 13px;
+            height: 13px;
+        }
+
+        .video-list.list-view.twitter-list .video-actions {
+            padding-top: 12px;
+            margin-top: 12px;
+        }
+
+        /* Fallback styling for Twitter blockquotes before widget renders */
+        .twitter-list blockquote.twitter-tweet {
+            margin: 0 !important;
+            padding: 16px;
+            background: #16181c;
+            border: 1px solid #38444d;
+            border-radius: 12px;
+            color: #e7e9ea;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .twitter-list blockquote.twitter-tweet p {
+            margin-bottom: 12px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .twitter-list blockquote.twitter-tweet a {
+            color: #1d9bf0;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .twitter-list blockquote.twitter-tweet a:hover {
+            text-decoration: underline;
+        }
+
+        /* Twitter card styling */
+        .tweet-card {
+            position: relative;
+        }
+
+        /* Card view - constrain tweet height */
+        .video-list.card-view.twitter-list blockquote.twitter-tweet:not(.twitter-tweet-rendered) {
+            max-height: 500px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* Constrain embedded tweet wrapper */
+        .video-list.card-view.twitter-list .tweet-container {
+            max-height: 650px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Add fade overlay for very long tweets in card view */
+        .video-list.card-view.twitter-list .tweet-container::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(to bottom, transparent, #212121);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .video-list.card-view.twitter-list .tweet-card:hover .tweet-container::after {
+            opacity: 0.8;
+        }
+
+        /* Remove fade in list view */
+        .video-list.list-view.twitter-list .tweet-container::after {
+            display: none;
+        }
+
         .video-list.card-view .video-item {
             display: flex;
             flex-direction: column;
@@ -216,6 +402,11 @@
             transition: all 0.2s ease;
             border: 1px solid transparent;
             overflow: hidden;
+        }
+
+        /* Full height for non-Twitter cards (for button alignment) */
+        .video-list.card-view:not(.twitter-list) .video-item {
+            height: 100%;
         }
 
         .video-list.card-view .video-item:hover {
@@ -229,6 +420,12 @@
             flex: 1;
             display: flex;
             flex-direction: column;
+            min-height: 0;
+        }
+
+        /* Ensure video info doesn't shrink */
+        .video-list.card-view .video-item .video-info {
+            flex-shrink: 0;
         }
 
         .video-list.card-view .video-actions {
@@ -258,12 +455,35 @@
 
         /* arXiv styles */
         .paper-item {
+            display: flex;
+            flex-direction: column;
             gap: 12px;
+            height: 100%;
+        }
+
+        /* arXiv list view */
+        .video-list.list-view .paper-item {
+            padding: 16px;
+        }
+
+        /* arXiv card view */
+        .video-list.card-view .paper-item {
+            padding: 16px;
+        }
+
+        /* Push buttons to bottom in card view */
+        .video-list.card-view .paper-item > *:not(.video-actions) {
+            flex-shrink: 0;
+        }
+
+        .video-list.card-view .paper-item .paper-summary {
+            flex-grow: 1;
         }
 
         .paper-header {
             display: flex;
             justify-content: space-between;
+            align-items: flex-start;
             gap: 16px;
         }
 
@@ -276,51 +496,113 @@
         }
 
         .paper-title {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
             color: #fff;
             margin-bottom: 6px;
+            line-height: 1.4;
+        }
+
+        .video-list.card-view .paper-title {
+            font-size: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
         .paper-authors {
             font-size: 13px;
             color: #b0b0b0;
             margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .video-list.card-view .paper-authors {
+            font-size: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
         .paper-summary {
             font-size: 14px;
             color: #d0d0d0;
             line-height: 1.6;
-            margin-bottom: 8px;
+            margin: 0;
+        }
+
+        .video-list.card-view .paper-summary {
+            font-size: 13px;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
         .paper-link {
             font-size: 13px;
             color: #3ea6ff;
             text-decoration: none;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .paper-link:hover {
             text-decoration: underline;
         }
 
+        .video-list.card-view .paper-item .video-actions {
+            padding: 0;
+            margin-top: 4px;
+        }
+
         /* GitHub styles */
         .repo-item {
-            gap: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            height: 100%;
+        }
+
+        /* GitHub list view */
+        .video-list.list-view .repo-item {
+            padding: 16px;
+        }
+
+        /* GitHub card view */
+        .video-list.card-view .repo-item {
+            padding: 16px;
+        }
+
+        /* Push buttons to bottom in card view */
+        .video-list.card-view .repo-item > *:not(.video-actions) {
+            flex-shrink: 0;
+        }
+
+        .video-list.card-view .repo-item .repo-description {
+            flex-grow: 1;
         }
 
         .repo-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
+            gap: 12px;
         }
 
         .repo-name {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
             color: #fff;
             text-decoration: none;
+            line-height: 1.3;
+            word-break: break-word;
+        }
+
+        .video-list.card-view .repo-name {
+            font-size: 15px;
         }
 
         .repo-name:hover {
@@ -330,6 +612,8 @@
         .repo-stars {
             font-size: 13px;
             color: #ffdf5d;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .repo-description {
@@ -338,11 +622,20 @@
             line-height: 1.5;
         }
 
+        .video-list.card-view .repo-description {
+            font-size: 13px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
         .repo-meta {
             display: flex;
             gap: 12px;
             font-size: 12px;
             color: #9aa0a6;
+            flex-wrap: wrap;
         }
 
         .repo-meta a {
@@ -352,6 +645,11 @@
 
         .repo-meta a:hover {
             text-decoration: underline;
+        }
+
+        .video-list.card-view .repo-item .video-actions {
+            padding: 0;
+            margin-top: 4px;
         }
 
         .thumbnail-wrapper {
@@ -855,7 +1153,7 @@
     </div>
 
     <div class="container">
-        <div class="video-list list-view" id="videoList">
+        <div class="video-list list-view {% if collection_type == 'twitter' %}twitter-list{% endif %}" id="videoList" data-collection-type="{{ collection_type }}">
             {% if collection_type == 'youtube' %}
                 {% for video in items %}
                 <div class="video-item">
@@ -901,9 +1199,9 @@
 
             {% elif collection_type == 'twitter' %}
                 {% for post in items %}
-                <div class="video-item" data-post-id="{{ post.id }}">
-                    <div style="flex: 1;">
-                        <blockquote class="twitter-tweet" data-theme="dark">
+                <div class="video-item tweet-card" data-post-id="{{ post.id }}">
+                    <div class="tweet-container">
+                        <blockquote class="twitter-tweet" data-theme="dark" data-dnt="true" data-conversation="none">
                             <p lang="en" dir="ltr">{{ post.text }}</p>
                             &mdash; {{ post.author_name }} (@{{ post.author_handle }})
                             <a href="{{ post.embed_url }}">View on X</a>
@@ -990,7 +1288,7 @@
                         <span>{{ repo.language }}</span>
                         {% endif %}
                         {% if repo.homepage %}
-                        <a href="{{ repo.homepage }}" target="_blank">Live Site</a>
+                        <a href="{{ repo.homepage }}" target="_blank">🔗 {{ repo.homepage }}</a>
                         {% endif %}
                     </div>
                     <div class="video-actions">
@@ -1071,12 +1369,18 @@
             const videoList = document.getElementById('videoList');
             const cardBtn = document.getElementById('cardViewBtn');
             const listBtn = document.getElementById('listViewBtn');
+            const collectionType = videoList.dataset.collectionType;
 
             if (view === 'card') {
                 videoList.classList.remove('list-view');
                 videoList.classList.add('card-view');
                 cardBtn.classList.add('active');
                 listBtn.classList.remove('active');
+
+                // For Twitter, calculate masonry grid spans after a delay
+                if (collectionType === 'twitter') {
+                    setTimeout(updateTwitterCardSpans, 500);
+                }
             } else {
                 videoList.classList.remove('card-view');
                 videoList.classList.add('list-view');
@@ -1086,6 +1390,26 @@
 
             // Save preference
             localStorage.setItem('videoView', view);
+        }
+
+        // Calculate and set grid row spans for Twitter cards (masonry layout)
+        function updateTwitterCardSpans() {
+            const videoList = document.getElementById('videoList');
+            if (!videoList || !videoList.classList.contains('card-view') || !videoList.classList.contains('twitter-list')) {
+                return;
+            }
+
+            const items = videoList.querySelectorAll('.video-item');
+            const rowHeight = 20; // Must match grid-auto-rows in CSS
+            const maxCardHeight = 650; // Max height for embedded tweets in card view
+
+            items.forEach(item => {
+                const height = Math.min(item.offsetHeight, maxCardHeight + 100); // +100 for buttons/padding
+                const rowSpan = Math.ceil((height + 16) / rowHeight); // +16 for gap
+                item.style.setProperty('--row-span', rowSpan);
+            });
+
+            console.log(`Updated ${items.length} Twitter card spans`);
         }
 
         // Collection switcher
@@ -1145,6 +1469,12 @@
                 console.log('Loading Twitter widgets...');
                 twttr.widgets.load(document.getElementById('videoList')).then(function() {
                     console.log('✓ Twitter widgets loaded successfully');
+                    // Update card spans multiple times as content loads
+                    setTimeout(updateTwitterCardSpans, 500);
+                    setTimeout(updateTwitterCardSpans, 1500);
+                    setTimeout(updateTwitterCardSpans, 3000);
+                    // Final update for late-loading images
+                    setTimeout(updateTwitterCardSpans, 5000);
                 }).catch(function(error) {
                     console.error('✗ Failed to load Twitter widgets:', error);
                 });
@@ -1154,9 +1484,31 @@
             }
         }
 
+        // Handle Twitter widget events for dynamic span updates
+        if (typeof twttr !== 'undefined') {
+            twttr.events.bind('rendered', function(event) {
+                console.log('Twitter widget rendered:', event.target);
+                // Update immediately and again after a short delay
+                updateTwitterCardSpans();
+                setTimeout(updateTwitterCardSpans, 500);
+            });
+
+            twttr.events.bind('loaded', function(event) {
+                console.log('Twitter widget loaded:', event.widgets);
+                setTimeout(updateTwitterCardSpans, 300);
+            });
+        }
+
         // Initialize Twitter widgets after DOM loads
         document.addEventListener('DOMContentLoaded', function() {
             loadTwitterWidgets();
+
+            // Update spans on window resize (debounced)
+            let resizeTimer;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(updateTwitterCardSpans, 250);
+            });
         });
         {% endif %}
     </script>
