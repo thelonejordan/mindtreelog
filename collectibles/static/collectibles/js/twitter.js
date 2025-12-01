@@ -48,9 +48,46 @@ if (typeof twttr !== 'undefined') {
     });
 }
 
+// Toggle tweet expansion on click (only one expanded at a time)
+function setupTweetExpansion() {
+    const videoList = document.getElementById('videoList');
+    if (!videoList || !videoList.classList.contains('twitter-list')) {
+        return;
+    }
+
+    // Add click event to all tweet containers
+    videoList.addEventListener('click', function(e) {
+        // Find the closest tweet container
+        const tweetContainer = e.target.closest('.tweet-container');
+        if (!tweetContainer) return;
+
+        // Find the parent video-item
+        const videoItem = tweetContainer.closest('.video-item');
+        if (!videoItem) return;
+
+        // Don't toggle if clicking on action buttons
+        if (e.target.closest('.video-actions')) return;
+
+        // Check if this tweet is already expanded
+        const isExpanded = videoItem.classList.contains('expanded');
+
+        // Collapse all other expanded tweets
+        const allExpandedItems = videoList.querySelectorAll('.video-item.expanded');
+        allExpandedItems.forEach(item => {
+            item.classList.remove('expanded');
+        });
+
+        // Toggle current tweet (expand if it wasn't expanded, keep collapsed if it was)
+        if (!isExpanded) {
+            videoItem.classList.add('expanded');
+        }
+    });
+}
+
 // Initialize Twitter widgets after DOM loads
 document.addEventListener('DOMContentLoaded', function() {
     loadTwitterWidgets();
+    setupTweetExpansion();
 
     // Update spans on window resize (debounced)
     let resizeTimer;

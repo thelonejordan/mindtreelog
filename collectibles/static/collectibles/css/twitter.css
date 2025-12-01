@@ -8,11 +8,13 @@
     align-items: stretch;
 }
 
-/* Twitter list view optimizations */
+/* Twitter list view optimizations - centered layout */
 .video-list.list-view.twitter-list .video-item {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 6px;
+    align-items: stretch;
+    padding: 6px 12px;
 }
 
 /* Twitter card view structure - fixed height */
@@ -20,7 +22,14 @@
     display: flex;
     flex-direction: column;
     padding: 0;
-    height: 380px; /* 320px tweet + ~60px for buttons */
+    height: 260px; /* 200px tweet + ~60px for buttons */
+    transition: height 0.3s ease;
+}
+
+/* Expanded state for card view */
+.video-list.card-view.twitter-list .video-item.expanded {
+    height: auto;
+    min-height: 260px;
 }
 
 /* Twitter embed container */
@@ -37,42 +46,75 @@
 /* Card View - Fixed height Twitter embeds */
 .video-list.card-view.twitter-list .twitter-tweet-rendered {
     max-width: 100% !important;
-    height: 320px !important;
-    max-height: 320px !important;
+    height: 200px !important;
+    max-height: 200px !important;
     overflow: hidden !important;
     margin: 0 !important;
+    transition: height 0.3s ease, max-height 0.3s ease;
 }
 
 .video-list.card-view.twitter-list iframe.twitter-tweet-rendered {
     max-width: 100% !important;
     width: 100% !important;
-    height: 320px !important;
-    max-height: 320px !important;
+    height: 200px !important;
+    max-height: 200px !important;
+    transition: height 0.3s ease, max-height 0.3s ease;
+}
+
+/* Expanded Twitter embeds in card view */
+.video-list.card-view.twitter-list .video-item.expanded .twitter-tweet-rendered,
+.video-list.card-view.twitter-list .video-item.expanded iframe.twitter-tweet-rendered {
+    height: auto !important;
+    max-height: none !important;
 }
 
 /* List View - Wider Twitter embeds with height limit for consistency */
 .video-list.list-view.twitter-list .twitter-tweet-rendered {
     max-width: 550px !important;
-    height: 320px !important;
-    max-height: 320px !important;
+    height: 200px !important;
+    max-height: 200px !important;
     overflow: hidden !important;
     margin: 0 !important;
+    transition: height 0.3s ease, max-height 0.3s ease;
 }
 
 .video-list.list-view.twitter-list iframe.twitter-tweet-rendered {
     max-width: 550px !important;
-    height: 320px !important;
-    max-height: 320px !important;
+    height: 200px !important;
+    max-height: 200px !important;
+    transition: height 0.3s ease, max-height 0.3s ease;
 }
 
-/* Twitter widget container in list view */
+/* Expanded Twitter embeds in list view */
+.video-list.list-view.twitter-list .video-item.expanded .twitter-tweet-rendered,
+.video-list.list-view.twitter-list .video-item.expanded iframe.twitter-tweet-rendered {
+    height: auto !important;
+    max-height: none !important;
+}
+
+/* Twitter widget container in list view - center aligned */
 .video-list.list-view.twitter-list .tweet-container {
     display: flex;
-    justify-content: flex-start;
-    height: 320px;
-    max-height: 320px;
+    justify-content: center;
+    height: 200px;
+    max-height: 200px;
     overflow: hidden;
     position: relative;
+    cursor: pointer;
+    transition: max-height 0.3s ease, height 0.3s ease;
+    align-self: center;
+    width: 100%;
+}
+
+.video-list.list-view.twitter-list .tweet-container:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* Expanded tweet container in list view */
+.video-list.list-view.twitter-list .video-item.expanded .tweet-container {
+    height: auto;
+    max-height: none;
+    cursor: zoom-out;
 }
 
 /* Add fade overlay for list view tweets */
@@ -82,10 +124,16 @@
     bottom: 0;
     left: 0;
     right: 0;
-    height: 50px;
+    height: 30px;
     background: linear-gradient(to bottom, transparent, #212121);
     pointer-events: none;
     opacity: 1;
+    transition: opacity 0.3s;
+}
+
+/* Hide fade overlay when expanded in list view */
+.video-list.list-view.twitter-list .video-item.expanded .tweet-container::after {
+    opacity: 0;
 }
 
 /* Smooth scrolling for long tweets in card view */
@@ -114,9 +162,41 @@
     height: 13px;
 }
 
+/* List view - center-aligned action buttons */
 .video-list.list-view.twitter-list .video-actions {
-    padding-top: 12px;
-    margin-top: 12px;
+    padding-top: 6px;
+    margin-top: 6px;
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    border-top: 1px solid #2a2a2a;
+    align-self: stretch;
+}
+
+.video-list.list-view.twitter-list .action-btn {
+    flex: 0 0 auto;
+    padding: 5px 12px;
+    font-size: 11px;
+}
+
+/* Better button colors for Twitter */
+.twitter-list .action-btn.resync {
+    background: #1d9bf0;
+    color: #fff;
+}
+
+.twitter-list .action-btn.resync:hover {
+    background: #1a8cd8;
+}
+
+.twitter-list .action-btn.delete {
+    background: #f91880;
+    color: #fff;
+}
+
+.twitter-list .action-btn.delete:hover {
+    background: #e0115f;
 }
 
 /* Fallback styling for Twitter blockquotes before widget renders */
@@ -154,24 +234,37 @@
 
 /* Card view - constrain tweet height */
 .video-list.card-view.twitter-list blockquote.twitter-tweet:not(.twitter-tweet-rendered) {
-    max-height: 320px;
+    max-height: 200px;
     overflow-y: auto;
     overflow-x: hidden;
 }
 
 /* List view - constrain tweet height for consistency */
 .video-list.list-view.twitter-list blockquote.twitter-tweet:not(.twitter-tweet-rendered) {
-    max-height: 320px;
+    max-height: 200px;
     overflow-y: auto;
     overflow-x: hidden;
 }
 
 /* Constrain embedded tweet wrapper */
 .video-list.card-view.twitter-list .tweet-container {
-    height: 320px;
-    max-height: 320px;
+    height: 200px;
+    max-height: 200px;
     overflow: hidden;
     position: relative;
+    cursor: pointer;
+    transition: max-height 0.3s ease, height 0.3s ease;
+}
+
+.video-list.card-view.twitter-list .tweet-container:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* Expanded tweet container */
+.video-list.card-view.twitter-list .video-item.expanded .tweet-container {
+    height: auto;
+    max-height: none;
+    cursor: zoom-out;
 }
 
 /* Add fade overlay for very long tweets in card view */
@@ -181,11 +274,16 @@
     bottom: 0;
     left: 0;
     right: 0;
-    height: 50px;
+    height: 30px;
     background: linear-gradient(to bottom, transparent, #212121);
     pointer-events: none;
     opacity: 1;
     transition: opacity 0.3s;
+}
+
+/* Hide fade overlay when expanded */
+.video-list.card-view.twitter-list .video-item.expanded .tweet-container::after {
+    opacity: 0;
 }
 
 
