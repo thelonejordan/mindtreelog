@@ -18,6 +18,8 @@
     <link rel="stylesheet" href="{% static 'collectibles/css/arxiv.css' %}">
     {% elif collection_type == 'github' %}
     <link rel="stylesheet" href="{% static 'collectibles/css/github.css' %}">
+    {% elif collection_type == 'links' %}
+    <link rel="stylesheet" href="{% static 'collectibles/css/links.css' %}">
     {% endif %}
 </head>
 <body>
@@ -202,7 +204,7 @@
                 </div>
                 {% endfor %}
 
-            {% else %}
+            {% elif collection_type == 'github' %}
                 {% for repo in items %}
                 <div class="video-item repo-item">
                     <div class="repo-header">
@@ -231,6 +233,51 @@
                         <form method="POST" action="{% url 'github_delete' repo.id %}" style="display: inline;">
                             {% csrf_token %}
                             <button type="submit" class="action-btn delete" onclick="return confirm('Delete this repository?');">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                </svg>
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="empty-state">
+                    <div class="empty-state-icon">{{ current_meta.empty_icon }}</div>
+                    <div class="empty-state-text">{{ current_meta.empty_text }}</div>
+                </div>
+                {% endfor %}
+
+            {% elif collection_type == 'links' %}
+                {% for link in items %}
+                <div class="video-item link-item">
+                    <div class="link-header">
+                        <div style="flex: 1;">
+                            <a class="link-title" href="{{ link.link_url }}" target="_blank">{{ link.title }}</a>
+                            <a class="link-url" href="{{ link.link_url }}" target="_blank">{{ link.url }}</a>
+                        </div>
+                    </div>
+                    {% if link.description %}
+                    <div class="link-description">{{ link.description }}</div>
+                    {% endif %}
+                    {% if link.tags %}
+                    <div class="link-tags">
+                        <span class="link-tag">{{ link.tags }}</span>
+                    </div>
+                    {% endif %}
+                    <div class="video-actions">
+                        <form method="POST" action="{% url 'link_resync' link.id %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="action-btn resync" onclick="return confirm('Resync link metadata?');">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                                </svg>
+                                Resync
+                            </button>
+                        </form>
+                        <form method="POST" action="{% url 'link_delete' link.id %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="action-btn delete" onclick="return confirm('Delete this link?');">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                     <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                 </svg>

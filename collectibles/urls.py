@@ -14,6 +14,8 @@ urlpatterns = [
     path("paper/<int:paper_id>/resync", views.arxiv_resync, name="arxiv_resync"),
     path("repo/<int:repo_id>/delete", views.github_delete, name="github_delete"),
     path("repo/<int:repo_id>/resync", views.github_resync, name="github_resync"),
+    path("link/<int:link_id>/delete", views.link_delete, name="link_delete"),
+    path("link/<int:link_id>/resync", views.link_resync, name="link_resync"),
     # Legacy redirects (for backward compatibility)
     path("list", views.video_list, name="list"),
     path("xlist", views.twitter_list, name="xlist"),

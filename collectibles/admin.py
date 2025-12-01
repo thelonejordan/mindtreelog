@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import ArxivPaper, GithubRepo, TwitterPost, YouTubeVideo
+from .models import ArxivPaper, GithubRepo, Link, TwitterPost, YouTubeVideo
 
 
 # Register your models here.
@@ -33,3 +33,10 @@ class GithubRepoAdmin(admin.ModelAdmin):
     list_display = ("full_name", "stars", "language")
     search_fields = ("full_name", "language")
     list_filter = ("language",)
+
+
+@admin.register(Link)
+class LinkAdmin(admin.ModelAdmin):
+    list_display = ("title", "url", "tags")
+    search_fields = ("title", "url", "description", "tags")
+    list_filter = ("tags",)

@@ -69,3 +69,19 @@ class GithubRepo(models.Model):
 
     def repo_url(self):
         return f"https://github.com/{self.full_name}"
+
+
+class Link(models.Model):
+    url = models.URLField(unique=True)
+    title = models.CharField(max_length=300)
+    description = models.TextField(blank=True)
+    tags = models.CharField(max_length=200, blank=True)
+
+    class Meta:
+        db_table = "links"
+
+    def __str__(self):
+        return f"{self.title[:50]}: {self.url[:50]}"
+
+    def link_url(self):
+        return self.url

@@ -7,7 +7,7 @@ import requests
 from django.contrib import messages
 from django.shortcuts import redirect, render
 
-COLLECTION_TYPES = ("youtube", "twitter", "arxiv", "github")
+COLLECTION_TYPES = ("youtube", "twitter", "arxiv", "github", "links")
 COLLECTION_METADATA = {
     "youtube": {
         "label": "YouTube Videos",
@@ -49,11 +49,21 @@ COLLECTION_METADATA = {
         "input_placeholder": "https://github.com/owner/repo",
         "add_title": "Add GitHub Repo",
     },
+    "links": {
+        "label": "Links",
+        "option_label": "🔗 Links",
+        "item_label": "link",
+        "empty_icon": "🔗",
+        "empty_text": "No links yet",
+        "input_label": "URL",
+        "input_placeholder": "https://example.com",
+        "add_title": "Add Link",
+    },
 }
 
 COLLECTION_OPTIONS = [{"value": key, "label": meta["option_label"]} for key, meta in COLLECTION_METADATA.items()]
 
-from .models import ArxivPaper, GithubRepo, TwitterPost, YouTubeVideo
+from .models import ArxivPaper, GithubRepo, Link, TwitterPost, YouTubeVideo
 
 
 def home(request):
@@ -70,6 +80,7 @@ def collections_list(request, collection_type="youtube"):
         "twitter": handle_twitter_add,
         "arxiv": handle_arxiv_add,
         "github": handle_github_add,
+        "links": handle_link_add,
     }
 
     if request.method == "POST":
@@ -82,6 +93,7 @@ def collections_list(request, collection_type="youtube"):
         "twitter": TwitterPost.objects.order_by("-id"),
         "arxiv": ArxivPaper.objects.order_by("-id"),
         "github": GithubRepo.objects.order_by("-id"),
+        "links": Link.objects.order_by("-id"),
     }
 
     items = query_map.get(collection_type, YouTubeVideo.objects.none())
@@ -706,3 +718,185 @@ def github_resync(request, repo_id):
     except (GithubRepo.DoesNotExist, ValueError):
         messages.error(request, "Repository not found")
     return redirect("collections_list", collection_type="github")
+
+
+def fetch_link_metadata(url):
+    """Fetch metadata (title and description) from a webpage."""
+    try:
+        # Check if SSL verification should be disabled (for development/proxy issues)
+        verify_ssl = os.getenv("LINK_VERIFY_SSL", "true").lower() != "false"
+
+        # Suppress SSL warnings if verification is disabled
+        if not verify_ssl:
+            import urllib3
+
+            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+            print("Warning: SSL verification disabled for link metadata fetching")
+
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        }
+        print(f"Fetching link metadata from: {url}")
+        response = requests.get(url, headers=headers, verify=verify_ssl, timeout=10, allow_redirects=True)
+        print(f"Link metadata Response Status: {response.status_code}")
+
+        if response.status_code != 200:
+            print(f"❌ Link metadata error {response.status_code}")
+            return None
+
+        html = response.text
+
+        # Extract title
+        title_match = re.search(r"<title[^>]*>([^<]+)</title>", html, re.IGNORECASE | re.DOTALL)
+        title = title_match.group(1).strip() if title_match else None
+        if title:
+            # Clean up title (remove extra whitespace, newlines)
+            title = re.sub(r"\s+", " ", title)
+            # Truncate if too long
+            if len(title) > 300:
+                title = title[:297] + "..."
+
+        # Extract meta description
+        description = None
+        meta_desc_match = re.search(
+            r'<meta[^>]*name=["\']description["\'][^>]*content=["\']([^"\']+)["\']',
+            html,
+            re.IGNORECASE,
+        )
+        if meta_desc_match:
+            description = meta_desc_match.group(1).strip()
+        else:
+            # Try Open Graph description
+            og_desc_match = re.search(
+                r'<meta[^>]*property=["\']og:description["\'][^>]*content=["\']([^"\']+)["\']',
+                html,
+                re.IGNORECASE,
+            )
+            if og_desc_match:
+                description = og_desc_match.group(1).strip()
+
+        # If no meta description, try to extract first paragraph
+        if not description:
+            # Look for first <p> tag with substantial content
+            p_match = re.search(r"<p[^>]*>([^<]{50,500})</p>", html, re.IGNORECASE | re.DOTALL)
+            if p_match:
+                description = p_match.group(1).strip()
+                # Remove HTML tags
+                description = re.sub(r"<[^>]+>", "", description)
+                # Clean up whitespace
+                description = re.sub(r"\s+", " ", description)
+                # Truncate
+                if len(description) > 500:
+                    description = description[:497] + "..."
+
+        # If still no title, use URL domain as fallback
+        if not title:
+            parsed = urlparse(url)
+            title = parsed.netloc or url[:50]
+
+        print(f"✓ Successfully fetched link metadata: {title[:50]}...")
+        return {
+            "title": title,
+            "description": description or "",
+        }
+    except requests.exceptions.SSLError as exc:
+        print(f"❌ SSL Error: {exc}")
+        print("Try setting LINK_VERIFY_SSL=false in .env file (development only)")
+        return None
+    except requests.exceptions.RequestException as exc:
+        print(f"❌ Network error fetching link metadata: {exc}")
+        return None
+    except Exception as exc:
+        print(f"❌ Unexpected error fetching link metadata: {exc}")
+        return None
+
+
+def handle_link_add(request):
+    """Handle adding a link/bookmark."""
+    link_url = request.POST.get("item_url", "").strip()
+
+    if not link_url:
+        messages.error(request, "Please enter a URL")
+        return redirect("collections_list", collection_type="links")
+
+    # Validate URL format
+    parsed = urlparse(link_url)
+    if not parsed.scheme or not parsed.netloc:
+        # Try adding https:// if no scheme
+        if not link_url.startswith(("http://", "https://")):
+            link_url = "https://" + link_url
+            parsed = urlparse(link_url)
+            if not parsed.netloc:
+                messages.error(request, "Invalid URL format")
+                return redirect("collections_list", collection_type="links")
+        else:
+            messages.error(request, "Invalid URL format")
+            return redirect("collections_list", collection_type="links")
+
+    # Normalize URL (remove trailing slash, etc.)
+    link_url = f"{parsed.scheme}://{parsed.netloc}{parsed.path}"
+    if parsed.query:
+        link_url += "?" + parsed.query
+    if parsed.fragment:
+        link_url += "#" + parsed.fragment
+
+    # Check if link already exists
+    if Link.objects.filter(url=link_url).exists():
+        messages.warning(request, "This link is already in your list")
+        return redirect("collections_list", collection_type="links")
+
+    # Fetch metadata (optional)
+    metadata = fetch_link_metadata(link_url)
+
+    # Create link
+    if metadata:
+        Link.objects.create(
+            url=link_url,
+            title=metadata["title"],
+            description=metadata["description"],
+        )
+        messages.success(request, f"Added: {metadata['title']}")
+    else:
+        # Save with URL as title if fetch failed
+        parsed = urlparse(link_url)
+        default_title = parsed.netloc or link_url[:50]
+        Link.objects.create(
+            url=link_url,
+            title=default_title,
+            description="",
+        )
+        messages.warning(
+            request,
+            f"Added link (metadata fetch failed - saved with default title: {default_title})",
+        )
+
+    return redirect("collections_list", collection_type="links")
+
+
+def link_delete(request, link_id):
+    """Delete a link from the list."""
+    try:
+        link = Link.objects.get(id=link_id)
+        title = link.title
+        link.delete()
+        messages.success(request, f"Deleted: {title}")
+    except Link.DoesNotExist:
+        messages.error(request, "Link not found")
+    return redirect("collections_list", collection_type="links")
+
+
+def link_resync(request, link_id):
+    """Refresh metadata for a link."""
+    try:
+        link = Link.objects.get(id=link_id)
+        metadata = fetch_link_metadata(link.url)
+        if metadata:
+            link.title = metadata["title"]
+            link.description = metadata["description"]
+            link.save()
+            messages.success(request, f"Resynced: {metadata['title']}")
+        else:
+            messages.error(request, "Could not fetch link metadata")
+    except Link.DoesNotExist:
+        messages.error(request, "Link not found")
+    return redirect("collections_list", collection_type="links")
